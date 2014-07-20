@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>R-tutorial for Data Analysis</title>
+  <meta charset="utf-8">
+  <meta name="description" content="R-tutorial for Data Analysis">
+  <meta name="author" content="George &amp; Johnson">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/slides" 
+    src="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>R-tutorial for Data Analysis</h1>
+    <h2></h2>
+    <p>George &amp; Johnson<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h1>Purpose</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>趙藤雄被羈押</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="figures/estate_news.png" alt="alt text"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>合適購屋站</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul class = "build incremental">
+<li>充斥一堆房價資訊，但每個家庭也都有各自的喜好條件</li>
+<li>simple model: 可以指定理想房屋型態、條件，可以提供你參考的房價</li>
+<li>Data source：不動產實價登錄資料 ( ~ 2014年5月16日)</li>
+<li>Predictor variables : 建物面積、所屬縣市、屋齡、行政區域、建物型態</li>
+<li>建物型態: 華廈(10層含以下有電梯)、套房(1房1廳1衛)、公寓(5樓含以下無電梯)、大樓(11層含以上有電梯)</li>
+</ul>
+
+<p><img src="figures/govdata.png" alt="Image"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h1>Exploratory</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Data Appearance</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">dat1 &lt;- readRDS(&quot;estate1.rds&quot;)
+nrow(dat1)
+</code></pre>
+
+<pre><code>## [1] 5436
+</code></pre>
+
+<pre><code class="r">head(dat1[sample(1:length(dat1),6),])
+</code></pre>
+
+<pre><code>##       \xa6\xe6\xacF\xb0\xcf   \xbf\xa4\xa5\xab \xab\xac\xbaA \xa9л\xf9
+## 21           \xb8U\xb5ذ\xcf \xbbO\xa5_\xa5\xab \xa4\xbd\xb4J  13750000
+## 5  \xa4\xa4\xa5\xbf\xb0\xcf \xbbO\xa5_\xa5\xab        \xb5طH  14650000
+## 16    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab        \xb5طH  11800000
+## 2     \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab        \xb5طH   8450000
+## 11    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab \xa4\xbd\xb4J  13500000
+## 1     \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab \xa4j\xbc\xd3  47500000
+##    \xad\xb1\xbfn \xab\xce\xc4\xd6         \xa8\xae\xa6\xec
+## 21         22.58               45    \xb5L\xa8\xae\xa6\xec
+## 5          20.94               38    \xb5L\xa8\xae\xa6\xec
+## 16         24.34               21    \xb5L\xa8\xae\xa6\xec
+## 2          21.80               21    \xb5L\xa8\xae\xa6\xec
+## 11         25.47               34    \xb5L\xa8\xae\xa6\xec
+## 1          80.50                6 \xa6\xb3\xa8\xae\xa6\xec
+##            \xba\u07b2z
+## 21    \xb5L\xba\u07b2z
+## 5     \xb5L\xba\u07b2z
+## 16    \xb5L\xba\u07b2z
+## 2  \xa6\xb3\xba\u07b2z
+## 11 \xa6\xb3\xba\u07b2z
+## 1  \xa6\xb3\xba\u07b2z
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Formula &amp; Description</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><p>Formula</p>
+
+<ul>
+<li><code>y ~ x</code>
+*(欲改成latex) y ~ x $y \sim x$</li>
+</ul></li>
+<li><p>Description</p></li>
+</ul>
+
+<pre><code class="r">summary(dat1)
+</code></pre>
+
+<pre><code>##                        \xa6\xe6\xacF\xb0\xcf
+##  &lt;ae&gt;&lt;e7&gt;&lt;b6&gt;饫          : 344              
+##  &lt;b2&gt;H&lt;a4&gt;&lt;f4&gt;&lt;b0&gt;&lt;cf&gt;   : 219              
+##  &lt;a6&gt;&lt;e8&gt;&lt;a4&gt;ٰ&lt;cf&gt;         : 160              
+##  &lt;b7&gt;&lt;a8&gt;&lt;b1&gt;&lt;f6&gt;&lt;a5&gt;&lt;ab&gt;: 146              
+##  &lt;a4&gt;&lt;e5&gt;&lt;a4&gt;s&lt;b0&gt;&lt;cf&gt;   : 144              
+##  &lt;a4&gt;&lt;a4&gt;&lt;c3&gt;c&lt;a5&gt;&lt;ab&gt;   : 137              
+##  (Other)                 :4286              
+##                        \xbf\xa4\xa5\xab   \xab\xac\xbaA     
+##  &lt;b7&gt;s&lt;a5&gt;_&lt;a5&gt;&lt;ab&gt;      :1056          \xa4\xbd\xb4J: 815  
+##  &lt;ae&gt;&lt;e7&gt;&lt;b6&gt;\u9fe4      : 978          \xb5طH       : 986  
+##  &lt;b0&gt;&lt;aa&gt;&lt;b6&gt;&lt;af&gt;&lt;a5&gt;&lt;ab&gt;: 604          \xa4j\xbc\xd3:2168  
+##  &lt;bb&gt;O&lt;ab&gt;n&lt;a5&gt;&lt;ab&gt;      : 570          \xaeM\xa9\xd0: 280  
+##  &lt;bb&gt;O&lt;a5&gt;_&lt;a5&gt;&lt;ab&gt;      : 551          \xb3z\xa4\xd1:1187  
+##  &lt;bb&gt;O&lt;a4&gt;&lt;a4&gt;&lt;a5&gt;&lt;ab&gt;   : 475                              
+##  (Other)                 :1202                              
+##       \xa9л\xf9          \xad\xb1\xbfn      \xab\xce\xc4\xd6
+##  Min.   :5.03e+04   Min.   :  0.3      Min.   : 0.0         
+##  1st Qu.:3.55e+06   1st Qu.: 26.2      1st Qu.: 4.0         
+##  Median :6.30e+06   Median : 35.8      Median :18.0         
+##  Mean   :9.24e+06   Mean   : 40.2      Mean   :16.9         
+##  3rd Qu.:1.04e+07   3rd Qu.: 48.9      3rd Qu.:25.0         
+##  Max.   :1.55e+08   Max.   :911.4      Max.   :74.0         
+##                                                             
+##    \xa8\xae\xa6\xec                \xba\u07b2z             
+##  \xb5L\xa8\xae\xa6\xec   :3415   \xa6\xb3\xba\u07b2z:3140  
+##  \xa6\xb3\xa8\xae\xa6\xec:2021   \xb5L\xba\u07b2z   :2296  
+##                                                            
+##                                                            
+##                                                            
+##                                                            
+## 
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Tabulating &amp; Pivot table</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Tabulating</li>
+</ul>
+
+<pre><code class="r">sort(table(dat1[,1]),decreasing = TRUE)[1:5]
+</code></pre>
+
+<pre><code>## 
+##           \xae\xe7\xb6饫    \xb2H\xa4\xf4\xb0\xcf          \xa6\xe8\xa4ٰ\xcf 
+##                      344                      219                      160 
+## \xb7\xa8\xb1\xf6\xa5\xab    \xa4\xe5\xa4s\xb0\xcf 
+##                      146                      144
+</code></pre>
+
+<ul>
+<li>Pivot table</li>
+</ul>
+
+<pre><code class="r">library(reshape)
+cast(dat1,型態 ~ ., fun.aggregate=mean,value=&quot;房價&quot;)
+</code></pre>
+
+<pre><code>## Error: Casting formula contains variables not found in molten data: 型態
+</code></pre>
+
+<hr>
+
+<h2>It&#39;s your turn 1</h2>
+
+<ul>
+<li>試練習各縣市在不同型態的房屋數量，如何操作?</li>
+</ul>
+
+<pre><code class="r">library(reshape)
+cast(dat1,型態 ~ ., fun.aggregate=mean,value=&quot;房價&quot;)
+</code></pre>
+
+<ul class = "build incremental">
+<li>Hint: cast + table</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Pivot table (Answer1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">cast(dat1,縣市~.,fun.aggregate=table,value=&quot;型態&quot;)
+</code></pre>
+
+<pre><code>## Error: Casting formula contains variables not found in molten data: 縣市
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Graphic is more intutive</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(1,2))
+barplot(sort(table(dat1$縣市),decreasing=TRUE)[1:10],las=1,horiz=TRUE)
+</code></pre>
+
+<pre><code>## Error: need finite &#39;xlim&#39; values
+</code></pre>
+
+<pre><code class="r">pie(sort(table(dat1$型態),decreasing=TRUE))
+</code></pre>
+
+<pre><code>## Error: &#39;length.out&#39; must be a non-negative number
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAogAAAFECAMAAACTVT/aAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAOJJREFUeJztwQENAAAAwqD3T+3sARQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHADNZEAAdL+VLMAAAAASUVORK5CYII=" alt="plot of chunk unnamed-chunk-7"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your turn 2</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(1,2))
+barplot(sort(table(dat1$縣市),decreasing=TRUE)[1:10],las=1,horiz=TRUE)
+pie(sort(table(dat1$型態),decreasing=TRUE))
+</code></pre>
+
+<ul>
+<li>1. 按型態的barplot是?</li>
+<li>2. 前五大縣市的pie plot?</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Barplot &amp; Pie plot (Ans2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(1,2))
+barplot(sort(table(dat1$型態),decreasing=TRUE),las=1,horiz=TRUE)
+</code></pre>
+
+<pre><code>## Error: need finite &#39;xlim&#39; values
+</code></pre>
+
+<pre><code class="r">pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5])
+</code></pre>
+
+<pre><code>## Error: &#39;x&#39; values must be positive.
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAogAAAFECAMAAACTVT/aAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAOJJREFUeJztwQENAAAAwqD3T+3sARQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHADNZEAAdL+VLMAAAAASUVORK5CYII=" alt="plot of chunk unnamed-chunk-9"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>ggplot (Visualization)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(ggplot2)
+count &lt;- sort(table(dat1$縣市),decreasing=TRUE)[1:10]
+zone &lt;- factor(names(count),levels=names(count),ordered=TRUE)
+df &lt;- data.frame(count, zone)
+</code></pre>
+
+<pre><code>## Error: arguments imply differing number of rows: 10, 0
+</code></pre>
+
+<pre><code class="r">ggplot(data=df, aes(x=zone,y=count,fill=zone)) + geom_bar(colour=&quot;black&quot;,stat=&quot;identity&quot;) + guides(fill=FALSE)
+</code></pre>
+
+<pre><code>## Error: ggplot2 doesn&#39;t know how to deal with data of class function
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Histogram</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(2,2))
+hist(dat1$面積,breaks=5,col=&quot;lightblue&quot;,prob=TRUE,xlab=&quot;面積&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: &#39;x&#39; must be numeric
+</code></pre>
+
+<pre><code class="r">hist(dat1$面積,breaks=100,col=&quot;lightgreen&quot;,prob=TRUE,xlab=&quot;面積&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: &#39;x&#39; must be numeric
+</code></pre>
+
+<pre><code class="r">hist(dat1$房價,breaks=20,col=&quot;lightyellow&quot;,prob=TRUE,xlab=&quot;房價&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: &#39;x&#39; must be numeric
+</code></pre>
+
+<pre><code class="r">hist(dat1$房價,breaks=200,col=&quot;lightgray&quot;,prob=TRUE,xlab=&quot;房價&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: &#39;x&#39; must be numeric
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Log transformation for ratio data</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul class = "build incremental">
+<li>what kind of data: 右偏，如: 芮氏規模地震、分貝、家庭年收入、成本、雨量。</li>
+<li>even more:  恐怖攻擊造成死亡人數，地震規模每年發生次數。</li>
+</ul>
+
+<pre><code class="r">par(mfrow=c(1,2))
+hist(log10(dat1$面積),breaks=20,col=&quot;blue&quot;,prob=TRUE,xlab=&quot;log10(面積)&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: non-numeric argument to mathematical function
+</code></pre>
+
+<pre><code class="r">hist(log10(dat1$房價),breaks=30,col=&quot;green&quot;,prob=TRUE,xlab=&quot;log10(房價)&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: non-numeric argument to mathematical function
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your turn 3</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(2,2))
+hist(dat1$面積,breaks=5,col=&quot;lightblue&quot;,prob=TRUE,xlab=&quot;面積&quot;,main=&quot;Historgram&quot;)
+hist(dat1$面積,breaks=20,col=&quot;lightgreen&quot;,prob=TRUE,xlab=&quot;面積&quot;,main=&quot;Historgram&quot;)
+hist(log10(dat1$面積),breaks=5,col=&quot;blue&quot;,prob=TRUE,xlab=&quot;log10(面積)&quot;,main=&quot;Historgram&quot;)
+hist(log10(dat1$面積),breaks=20,col=&quot;green&quot;,prob=TRUE,xlab=&quot;log10(面積)&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<ul>
+<li>房價(單位百萬)直方圖, log房價(單位百萬)直方圖</li>
+</ul>
+
+<ul class = "build incremental">
+<li>HINT: 房價單位百萬，寬度調小</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Histogram (Ans3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(1,2))
+hist(dat1$房價/10^6,breaks=100,col=&quot;lightpink&quot;,prob=TRUE,xlab=&quot;房價(百萬)&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: character(0)
+</code></pre>
+
+<pre><code class="r">hist(log10(dat1$房價),breaks=20,col=&quot;deeppink&quot;,prob=TRUE,xlab=&quot;log10(房價)&quot;,main=&quot;Historgram&quot;)
+</code></pre>
+
+<pre><code>## Error: non-numeric argument to mathematical function
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>Boxplot</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>|----------------|----------|
+| median : 中位數            |  IQR : interquantile range|
+|range(Q1-1.5IQR,Q3+1.5IQR)  | outlier |</p>
+
+<pre><code class="r">boxplot(面積~型態,data=subset(dat1,縣市==&quot;臺北市&quot;),ylab=&quot;面積(坪)&quot;,main=&quot;面積&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;縣市&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your turn 4</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>請繪製有五都(&quot;臺北市&quot;,&quot;新北市&quot;,&quot;臺中市&quot;,&quot;高雄市&quot;,&quot;臺南市&quot;) 透天 log10(房價) 和 套房 log10(房價)的boxplot 各一張<br></li>
+</ul>
+
+<pre><code class="r">boxplot(面積~型態,data=subset(dat1,縣市==&quot;臺北市&quot;),ylab=&quot;面積(坪)&quot;,main=&quot;面積&quot;)
+</code></pre>
+
+<ul class = "build incremental">
+<li>HINT:
+<b>
+dat2 &lt;- dat1[dat1$縣市 %in% c(&quot;臺北市&quot;,&quot;臺中市&quot;,&quot;新北市&quot;,&quot;臺南市&quot;,&quot;高雄市&quot;) ,]
+dat2$縣市 &lt;- factor(dat2$縣市,levels=c(&quot;臺北市&quot;,&quot;臺中市&quot;,&quot;新北市&quot;,&quot;臺南市&quot;,&quot;高雄市&quot;))
+</b></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Boxplot (Ans4)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(1,2))
+dat2 &lt;- dat1[dat1$縣市 %in% c(&quot;臺北市&quot;,&quot;臺中市&quot;,&quot;新北市&quot;,&quot;臺南市&quot;,&quot;高雄市&quot;) ,]
+dat2$縣市 &lt;- factor(dat2$縣市,levels=c(&quot;臺北市&quot;,&quot;臺中市&quot;,&quot;新北市&quot;,&quot;臺南市&quot;,&quot;高雄市&quot;))
+boxplot(log10(房價)~縣市,data=subset(dat2,型態==&quot;透天&quot;),las=2,ylab=&quot;log10(房價)&quot;,main=&quot;透天&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;型態&#39; not found
+</code></pre>
+
+<pre><code class="r">boxplot(log10(房價)~縣市,data=subset(dat2,型態==&quot;套房&quot;),las=2,ylab=&quot;log10(房價)&quot;,main=&quot;套房&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;型態&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h1>Regression</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Variables</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>$y$: response ,explained variable, dependent variable, predictand. 如: 房價、雨量</li>
+<li>$x$: predictor, independnet variable... 如: (面積,型態)、(溫度、風速、氣壓)</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Scatter plot</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(1,2))
+plot(dat1$面積,dat1$房價/10^4,xlab=&quot;面積(坪)&quot;,ylab=&quot;房價(萬元)&quot;)
+</code></pre>
+
+<pre><code>## Error: need finite &#39;xlim&#39; values
+</code></pre>
+
+<pre><code class="r">plot(dat1$面積,dat1$房價/10^4,xlab=&quot;log面積(坪)&quot;,ylab=&quot;log房價(萬元)&quot;,log=&quot;xy&quot;)
+</code></pre>
+
+<pre><code>## Error: need finite &#39;xlim&#39; values
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAogAAAFECAMAAACTVT/aAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAOJJREFUeJztwQENAAAAwqD3T+3sARQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHADNZEAAdL+VLMAAAAASUVORK5CYII=" alt="plot of chunk unnamed-chunk-18"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>Simple regression</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">x &lt;- dat1$面積
+y &lt;- dat1$房價/10^4
+c(cor(x,y),cor(log10(x),log10(y)))
+</code></pre>
+
+<pre><code>## Error: &#39;x&#39; must be numeric
+</code></pre>
+
+<pre><code class="r">plot(x,y,xlab=&quot;面積(坪)&quot;,ylab=&quot;房價(萬元)&quot;,log=&quot;xy&quot;)
+</code></pre>
+
+<pre><code>## Error: need finite &#39;xlim&#39; values
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA2AAAADYCAMAAAC6PXATAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAMxJREFUeJztwTEBAAAAwqD1T20Gf6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgPZ9gABZHd4zAAAAABJRU5ErkJggg==" alt="plot of chunk unnamed-chunk-19"> </p>
+
+<pre><code class="r">fit &lt;- lm(log10(y)~log10(x))
+</code></pre>
+
+<pre><code>## Error: non-numeric argument to mathematical function
+</code></pre>
+
+<pre><code class="r">abline(fit,col=2,lwd=2)
+</code></pre>
+
+<pre><code>## Error: object &#39;fit&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>Simple regression - model output</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">summary(fit)
+</code></pre>
+
+<pre><code>## Error: object &#39;fit&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your turn 5</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">x &lt;- dat1$面積
+y &lt;- dat1$房價/10^4
+c(cor(x,y),cor(log10(x),log10(y)))
+plot(x,y,xlab=&quot;面積(坪)&quot;,ylab=&quot;房價(萬元)&quot;,log=&quot;xy&quot;)
+fit &lt;- lm(log10(y)~log10(x))
+abline(fit,col=2,lwd=2)
+</code></pre>
+
+<ul>
+<li>試作 臺北市房價 簡單回歸模型</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-26" style="background:;">
+  <hgroup>
+    <h2>Simple regression (Ans5)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">dat3 &lt;- dat1[dat1$縣市==&quot;臺北市&quot;,]
+x &lt;- dat3$面積-y &lt;- dat3$房價/10^4
+plot(x,y,log=&quot;xy&quot;);fit&lt;-lm(log10(y)~log10(x))
+</code></pre>
+
+<pre><code>## Error: need finite &#39;xlim&#39; values
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA2AAAAEgCAMAAADli+DTAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAQhJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeDTNTQABBDWEGwAAAABJRU5ErkJggg==" alt="plot of chunk unnamed-chunk-22"> </p>
+
+<pre><code>## Error: non-numeric argument to mathematical function
+</code></pre>
+
+<pre><code class="r">abline(fit,col=2)
+</code></pre>
+
+<pre><code>## Error: object &#39;fit&#39; not found
+</code></pre>
+
+<pre><code class="r">legend(&quot;topleft&quot;,legend=round(summary(fit)$r.squared,4),title=&quot;r.squared&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;fit&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-27" style="background:;">
+  <hgroup>
+    <h2>Multiple regression  - Category variable</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(ggplot2)
+dat4 &lt;- dat1
+names(dat4) &lt;- c(&quot;admin&quot;,&quot;zone&quot;,&quot;type&quot;,&quot;price&quot;,&quot;area&quot;,&quot;age&quot;,&quot;parking&quot;,&quot;maintance&quot;)
+qplot(area,price,data=dat4,log=&quot;xy&quot;) + geom_smooth(method=&quot;lm&quot;) + facet_grid(parking ~ maintance)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-23"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>Category Variable</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">m11 &lt;- lm(log10(房價)~面積+屋齡+型態+車位+管理, data=dat1)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r">m12 &lt;- lm(log10(房價)~面積+屋齡+型態+車位+管理+行政區+縣市, data=dat1)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r">summary(m11)
+</code></pre>
+
+<pre><code>## Error: object &#39;m11&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your turn 6</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">m11 &lt;- lm(log10(房價)~面積+屋齡+型態+車位+管理, data=dat1)
+m12 &lt;- lm(log10(房價)~面積+屋齡+型態+車位+管理+行政區+縣市, data=dat1)
+summary(m11)
+</code></pre>
+
+<ul>
+<li>試建立臺北市 multiple regression(predictor: 分別多行政區與縣市)，並找出R.squared</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>Multiple regression &amp; category variable-1 (Ans6)-1</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">m21 &lt;- lm(log10(房價)~面積+屋齡+型態+車位+管理, data=dat3)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r">m22 &lt;- lm(log10(房價)~面積+屋齡+型態+車位+管理+行政區, data=dat3)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r"># R-squared, 越趨近1模型解釋能力越好
+data.frame(&quot;m11&quot;=summary(m11)$r.sq, &quot;m12&quot;=summary(m12)$r.sq, &quot;m21&quot;=summary(m21)$r.sq, &quot;m22&quot;=summary(m22)$r.sq)
+</code></pre>
+
+<pre><code>## Error: object &#39;m11&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>Multiple regression &amp; category variable-1 (Ans6)-2</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">summary(m21)
+</code></pre>
+
+<pre><code>## Error: object &#39;m21&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>Multiple regression &amp; category variable-1 (Ans6)-3</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">summary(m22)
+</code></pre>
+
+<pre><code>## Error: object &#39;m22&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>Forecasting</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">head(dat1,n=3)
+</code></pre>
+
+<pre><code>##      \xa6\xe6\xacF\xb0\xcf   \xbf\xa4\xa5\xab \xab\xac\xbaA \xa9л\xf9
+## 1    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab \xa4j\xbc\xd3  47500000
+## 2    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab        \xb5طH   8450000
+## 5 \xa4\xa4\xa5\xbf\xb0\xcf \xbbO\xa5_\xa5\xab        \xb5طH  14650000
+##   \xad\xb1\xbfn \xab\xce\xc4\xd6         \xa8\xae\xa6\xec
+## 1         80.50                6 \xa6\xb3\xa8\xae\xa6\xec
+## 2         21.80               21    \xb5L\xa8\xae\xa6\xec
+## 5         20.94               38    \xb5L\xa8\xae\xa6\xec
+##           \xba\u07b2z
+## 1 \xa6\xb3\xba\u07b2z
+## 2 \xa6\xb3\xba\u07b2z
+## 5    \xb5L\xba\u07b2z
+</code></pre>
+
+<pre><code class="r">forecast &lt;- dat1[1:5, c(1,2,3,5,6,7,8)]
+rownames(forecast) &lt;- 1:5
+forecast$面積 &lt;- c(30,30,8,40,40)
+forecast$行政區 &lt;- c(&quot;萬華區&quot;,&quot;大安區&quot;,&quot;信義區&quot;,&quot;中山區&quot;,&quot;南港區&quot;)
+forecast$屋齡 &lt;- c(30,6,6,8,8)
+forecast$車位 &lt;- c(&quot;無車位&quot;,&quot;有車位&quot;,&quot;無車位&quot;,&quot;有車位&quot;,&quot;有車位&quot;)
+forecast$管理 &lt;- c(&quot;無管理&quot;,&quot;有管理&quot;,&quot;無管理&quot;,&quot;有管理&quot;,&quot;有管理&quot;)
+forecast$型態 &lt;- c(&quot;公寓&quot;,&quot;大樓&quot;,&quot;套房&quot;,&quot;大樓&quot;,&quot;透天&quot;)
+forecast$縣市 &lt;- rep(&quot;臺北市&quot;,5)
+forecast
+</code></pre>
+
+<pre><code>##      \xa6\xe6\xacF\xb0\xcf   \xbf\xa4\xa5\xab \xab\xac\xbaA \xad\xb1\xbfn
+## 1    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab \xa4j\xbc\xd3         80.50
+## 2    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab        \xb5طH         21.80
+## 3 \xa4\xa4\xa5\xbf\xb0\xcf \xbbO\xa5_\xa5\xab        \xb5طH         20.94
+## 4    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab \xa4\xbd\xb4J         26.24
+## 5    \xa4\xe5\xa4s\xb0\xcf \xbbO\xa5_\xa5\xab \xa4\xbd\xb4J         30.35
+##   \xab\xce\xc4\xd6         \xa8\xae\xa6\xec         \xba\u07b2z 面積
+## 1                6 \xa6\xb3\xa8\xae\xa6\xec \xa6\xb3\xba\u07b2z   30
+## 2               21    \xb5L\xa8\xae\xa6\xec \xa6\xb3\xba\u07b2z   30
+## 3               38    \xb5L\xa8\xae\xa6\xec    \xb5L\xba\u07b2z    8
+## 4               31    \xb5L\xa8\xae\xa6\xec \xa6\xb3\xba\u07b2z   40
+## 5               40    \xb5L\xa8\xae\xa6\xec    \xb5L\xba\u07b2z   40
+##   行政區 屋齡   車位   管理 型態   縣市
+## 1 萬華區   30 無車位 無管理 公寓 臺北市
+## 2 大安區    6 有車位 有管理 大樓 臺北市
+## 3 信義區    6 無車位 無管理 套房 臺北市
+## 4 中山區    8 有車位 有管理 大樓 臺北市
+## 5 南港區    8 有車位 有管理 透天 臺北市
+</code></pre>
+
+<pre><code class="r"># prediction
+#tmp &lt;- predict(m12, newdata=forecast, se.fit=TRUE)
+#pred &lt;- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
+#data.frame(&quot;建案坪數&quot;=forecast$面積, &quot;建物型態&quot;=forecast$型態, 
+#           &quot;總價估計.萬元&quot;=round(pred[,1]/10000),
+#           &quot;單價估計.萬元&quot;=round(pred[,1]/10000/forecast$面積))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-34" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your trun 7</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">forecast &lt;- dat1[1:5, c(1,2,3,5,6,7,8)]
+rownames(forecast) &lt;- 1:5
+forecast$面積 &lt;- c(30,30,8,40,40)
+forecast$行政區 &lt;- c(&quot;萬華區&quot;,&quot;大安區&quot;,&quot;信義區&quot;,&quot;中山區&quot;,&quot;南港區&quot;)
+forecast$屋齡 &lt;- c(30,6,6,8,8)
+forecast$車位 &lt;- c(&quot;車位無&quot;,&quot;車位有&quot;,&quot;車位無&quot;,&quot;車位有&quot;,&quot;車位有&quot;)
+forecast$管理 &lt;- c(&quot;管理無&quot;,&quot;管理有&quot;,&quot;管理無&quot;,&quot;管理有&quot;,&quot;管理有&quot;)
+forecast$型態 &lt;- c(&quot;公寓&quot;,&quot;大樓&quot;,&quot;套房&quot;,&quot;大樓&quot;,&quot;透天&quot;)
+forecast$縣市 &lt;- rep(&quot;臺北市&quot;,5)
+# prediction
+tmp &lt;- predict(m12, newdata=forecast, se.fit=TRUE)
+pred &lt;- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
+data.frame(&quot;建案坪數&quot;=forecast$面積, &quot;建物型態&quot;=forecast$型態, 
+           &quot;總價估計.萬元&quot;=round(pred[,1]/10000),
+           &quot;單價估計.萬元&quot;=round(pred[,1]/10000/forecast$面積))
+</code></pre>
+
+<ul>
+<li>試練習直接使用臺北市資料所建立之模型，作以上預測。</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-35" style="background:;">
+  <hgroup>
+    <h2>Forecasting (Ans7)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">head(dat3)
+</code></pre>
+
+<pre><code>## [1] \xa6\xe6\xacF\xb0\xcf \xbf\xa4\xa5\xab      \xab\xac\xbaA        
+## [4] \xa9л\xf9             \xad\xb1\xbfn         \xab\xce\xc4\xd6     
+## [7] \xa8\xae\xa6\xec      \xba\u07b2z          
+## &lt;0 rows&gt; (or 0-length row.names)
+</code></pre>
+
+<pre><code class="r">forecast &lt;- dat3[1:5, c(1,3,5,6,7,8)]
+rownames(forecast) &lt;- 1:5
+forecast$面積 &lt;- c(30,30,8,40,40)
+forecast$行政區 &lt;- c(&quot;萬華區&quot;,&quot;大安區&quot;,&quot;信義區&quot;,&quot;中山區&quot;,&quot;南港區&quot;)
+forecast$屋齡 &lt;- c(30,6,6,8,8)
+forecast$車位 &lt;- c(&quot;車位無&quot;,&quot;車位有&quot;,&quot;車位無&quot;,&quot;車位有&quot;,&quot;車位有&quot;)
+forecast$管理 &lt;- c(&quot;管理無&quot;,&quot;管理有&quot;,&quot;管理無&quot;,&quot;管理有&quot;,&quot;管理有&quot;)
+forecast$型態 &lt;- c(&quot;公寓&quot;,&quot;大樓&quot;,&quot;套房&quot;,&quot;大樓&quot;,&quot;透天&quot;)
+# prediction
+forecast;m12
+</code></pre>
+
+<pre><code>##   \xa6\xe6\xacF\xb0\xcf \xab\xac\xbaA \xad\xb1\xbfn \xab\xce\xc4\xd6
+## 1                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 2                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 3                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 4                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 5                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+##   \xa8\xae\xa6\xec \xba\u07b2z 面積 行政區 屋齡   車位   管理 型態
+## 1             &lt;NA&gt;        &lt;NA&gt;   30 萬華區   30 車位無 管理無 公寓
+## 2             &lt;NA&gt;        &lt;NA&gt;   30 大安區    6 車位有 管理有 大樓
+## 3             &lt;NA&gt;        &lt;NA&gt;    8 信義區    6 車位無 管理無 套房
+## 4             &lt;NA&gt;        &lt;NA&gt;   40 中山區    8 車位有 管理有 大樓
+## 5             &lt;NA&gt;        &lt;NA&gt;   40 南港區    8 車位有 管理有 透天
+</code></pre>
+
+<pre><code>## Error: object &#39;m12&#39; not found
+</code></pre>
+
+<pre><code>##   \xa6\xe6\xacF\xb0\xcf \xab\xac\xbaA \xad\xb1\xbfn \xab\xce\xc4\xd6
+## 1                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 2                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 3                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 4                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+## 5                  &lt;NA&gt;          &lt;NA&gt;            NA               NA
+##   \xa8\xae\xa6\xec \xba\u07b2z 面積 行政區 屋齡   車位   管理 型態
+## 1             &lt;NA&gt;        &lt;NA&gt;   30 萬華區   30 車位無 管理無 公寓
+## 2             &lt;NA&gt;        &lt;NA&gt;   30 大安區    6 車位有 管理有 大樓
+## 3             &lt;NA&gt;        &lt;NA&gt;    8 信義區    6 車位無 管理無 套房
+## 4             &lt;NA&gt;        &lt;NA&gt;   40 中山區    8 車位有 管理有 大樓
+## 5             &lt;NA&gt;        &lt;NA&gt;   40 南港區    8 車位有 管理有 透天
+</code></pre>
+
+<pre><code class="r">#tmp &lt;- predict(m22, newdata=forecast, se.fit=TRUE)
+#pred &lt;- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
+#data.frame(&quot;建案坪數&quot;=forecast$面積, &quot;建物型態&quot;=forecast$型態, 
+#           &quot;總價估計.萬元&quot;=round(pred[,1]/10000),
+#           &quot;單價估計.萬元&quot;=round(pred[,1]/10000/forecast$面積))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-36" style="background:;">
+  <hgroup>
+    <h1>Data Mining - Dicision Tree</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-37" style="background:;">
+  <hgroup>
+    <h2>Dicision Tree</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(rpart)
+dat3$房價百萬 &lt;- dat3$房價/10^6
+fit &lt;- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
+</code></pre>
+
+<pre><code>## Error: object &#39;型態&#39; not found
+</code></pre>
+
+<pre><code class="r">library(rpart.plot)
+prp(fit,extra=1)
+</code></pre>
+
+<pre><code>## Error: object &#39;fit&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-38" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your turn 8</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(rpart)
+dat3$房價百萬 &lt;- dat3$房價/10^6
+fit &lt;- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
+library(rpart.plot)
+prp(fit,extra=1)
+</code></pre>
+
+<ul>
+<li>試練習五都 Disicion Tree</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-39" style="background:;">
+  <hgroup>
+    <h2>Dicision Tree (Ans8)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">dat2$房價百萬 &lt;- dat2$房價/10^6
+fit2 &lt;- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
+</code></pre>
+
+<pre><code>## Error: object &#39;型態&#39; not found
+</code></pre>
+
+<pre><code class="r">prp(fit2,extra=1)
+</code></pre>
+
+<pre><code>## Error: object &#39;fit2&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-40" style="background:;">
+  <hgroup>
+    <h1>Future</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-41" style="background:;">
+  <hgroup>
+    <h2>進階課程內容</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>GAM(Generalized Additive Model): nonlinear parameter for nonlinear model
+
+<ul>
+<li>進階模型配適</li>
+</ul></li>
+<li><p>Overfitting:</p>
+
+<ul>
+<li>模型是否預測準確? (Cross Validation, model selection critera)</li>
+</ul></li>
+<li><p>Evaluation: </p>
+
+<ul>
+<li>校驗模型準確性(RMSE,MAE,Recall &amp; Recall)</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-42" style="background:;">
+  <hgroup>
+    <h1>non-linear coefficent(補充)</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-43" style="background:;">
+  <hgroup>
+    <h2>GAM model</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m31 &lt;- lm(log10(房價)~面積+車位+屋齡+縣市+型態+行政區, data=dat1)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r"># fit addiive model with two smooth terms
+m32 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+縣市+型態+行政區, data=dat1)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r"># Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame(&quot;linear model&quot;=summary(m31)$r.sq,&quot;additive model&quot;=summary(m32)$r.sq)
+</code></pre>
+
+<pre><code>## Error: object &#39;m31&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-44" style="background:;">
+  <hgroup>
+    <h2>GAM model parameter : smoothing parameter</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(cex=1.2, mfrow=c(1,2))
+plot(m32, select=1, lwd=2) 
+</code></pre>
+
+<pre><code>## Error: object &#39;m32&#39; not found
+</code></pre>
+
+<pre><code class="r">abline(h=m31$coefficients[[&quot;面積&quot;]], lwd=2, col=2)
+</code></pre>
+
+<pre><code>## Error: object &#39;m31&#39; not found
+</code></pre>
+
+<pre><code class="r">legend(&quot;topleft&quot;, c(&quot;Smooth term&quot;, &quot;Linear term&quot;), col=1:2, lty=1, lwd=2, bty=&quot;n&quot;)
+</code></pre>
+
+<pre><code>## Error: plot.new has not been called yet
+</code></pre>
+
+<pre><code class="r">plot(m32, select=2, lwd=2)
+</code></pre>
+
+<pre><code>## Error: object &#39;m32&#39; not found
+</code></pre>
+
+<pre><code class="r">abline(h=m31$coefficients[[&quot;屋齡&quot;]], lwd=2, col=2)
+</code></pre>
+
+<pre><code>## Error: object &#39;m31&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-45" style="background:;">
+  <hgroup>
+    <h2>Compare Multiple regression and GAM model Answer</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m_new1 &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r"># fit addiive model with two smooth terms
+m_new2 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r"># Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame(&quot;linear model&quot;=summary(m_new1)$adj.r.sq, &quot;additive model&quot;=summary(m_new2)$r.sq)
+</code></pre>
+
+<pre><code>## Error: object &#39;m_new1&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-46" style="background:;">
+  <hgroup>
+    <h2>It&#39;s your turn 7+1</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m_new1 &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
+# fit addiive model with two smooth terms
+m_new2 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
+# Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame(&quot;linear model&quot;=summary(m_new1)$adj.r.sq, &quot;additive model&quot;=summary(m_new2)$r.sq)
+</code></pre>
+
+<ul>
+<li>試比較臺北市lm與gam模型，參數同上</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-47" style="background:;">
+  <hgroup>
+    <h2>Multiple regression &amp; GAM (Ans7+1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m_new1_taip &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=dat3)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r"># fit addiive model with two smooth terms
+m_new2_taip &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=dat3)
+</code></pre>
+
+<pre><code>## Error: object &#39;房價&#39; not found
+</code></pre>
+
+<pre><code class="r"># Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame(&quot;linear model&quot;=summary(m_new1_taip)$adj.r.sq, &quot;additive model&quot;=summary(m_new2_taip)$r.sq)
+</code></pre>
+
+<pre><code>## Error: object &#39;m_new1_taip&#39; not found
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Purpose'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='趙藤雄被羈押'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='合適購屋站'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Exploratory'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Data Appearance'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Formula &amp; Description'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Tabulating &amp; Pivot table'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Pivot table (Answer1)'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Graphic is more intutive'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='It&#39;s your turn 2'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Barplot &amp; Pie plot (Ans2)'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='ggplot (Visualization)'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Histogram'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Log transformation for ratio data'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='It&#39;s your turn 3'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Histogram (Ans3)'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='Boxplot'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='It&#39;s your turn 4'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Boxplot (Ans4)'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Regression'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Variables'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='Scatter plot'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='Simple regression'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='Simple regression - model output'>
+         24
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='It&#39;s your turn 5'>
+         25
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=26 title='Simple regression (Ans5)'>
+         26
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=27 title='Multiple regression  - Category variable'>
+         27
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=28 title='Category Variable'>
+         28
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=29 title='It&#39;s your turn 6'>
+         29
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=30 title='Multiple regression &amp; category variable-1 (Ans6)-1'>
+         30
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=31 title='Multiple regression &amp; category variable-1 (Ans6)-2'>
+         31
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=32 title='Multiple regression &amp; category variable-1 (Ans6)-3'>
+         32
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=33 title='Forecasting'>
+         33
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=34 title='It&#39;s your trun 7'>
+         34
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=35 title='Forecasting (Ans7)'>
+         35
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=36 title='Data Mining - Dicision Tree'>
+         36
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=37 title='Dicision Tree'>
+         37
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=38 title='It&#39;s your turn 8'>
+         38
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=39 title='Dicision Tree (Ans8)'>
+         39
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=40 title='Future'>
+         40
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=41 title='進階課程內容'>
+         41
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=42 title='non-linear coefficent(補充)'>
+         42
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=43 title='GAM model'>
+         43
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=44 title='GAM model parameter : smoothing parameter'>
+         44
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=45 title='Compare Multiple regression and GAM model Answer'>
+         45
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=46 title='It&#39;s your turn 7+1'>
+         46
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=47 title='Multiple regression &amp; GAM (Ans7+1)'>
+         47
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
