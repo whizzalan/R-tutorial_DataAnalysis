@@ -10,17 +10,14 @@ widgets     : [mathjax, quiz, bootstrap]
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 logo        : Taiwan-R-logo.png
----
-
-
-
 --- .segue .dark 
+
 ## Purpose 
 
 
----
+--- 
 ## 趙藤雄被羈押
-![alt text](figure/estate_news.png)
+<img class=center src=figure/estate_news.png height=150>
 
 ---
 ## 合適購屋站
@@ -30,7 +27,8 @@ logo        : Taiwan-R-logo.png
 > - Predictor variables : 建物面積、所屬縣市、屋齡、行政區域、建物型態
 > - 建物型態: 華廈(10層含以下有電梯)、套房(1房1廳1衛)、公寓(5樓含以下無電梯)、大樓(11層含以上有電梯)
 
-![Image](figure/govdata.png)
+<img class=center src=figure/govdata.png style="width: 650px;">
+
 
 
 --- .segue .dark 
@@ -49,29 +47,47 @@ nrow(dat1)
 ```
 
 ```r
-head(dat1[sample(1:length(dat1),6),])
+# random sampling
+head(dat1[sample(1:nrow(dat1),6),])
 ```
 
 ```
-         行政區   縣市 型態     房價 面積 屋齡   車位   管理
-9  臺北市文山區 臺北市 公寓  8120000 26.2   31 無車位 有管理
-16 臺北市文山區 臺北市 華廈 11800000 24.3   21 無車位 無管理
-2  臺北市文山區 臺北市 華廈  8450000 21.8   21 無車位 有管理
-5  臺北市中正區 臺北市 華廈 14600000 20.9   38 無車位 無管理
-11 臺北市文山區 臺北市 公寓 13500000 25.5   34 無車位 有管理
-1  臺北市文山區 臺北市 大樓 47500000 80.5    6 有車位 有管理
+            行政區   縣市 型態     房價  面積 屋齡   車位   管理
+5049  高雄市三民區 高雄市 大樓 11600000 52.98    1 有車位 有管理
+11332 桃園縣桃園市 桃園縣 公寓  2750000 23.89   30 無車位 無管理
+6032  高雄市大寮區 高雄市 透天  3500000 23.72   37 無車位 無管理
+1460  臺中市西屯區 臺中市 套房  1110000  9.26   23 無車位 有管理
+1103  臺北市北投區 臺北市 公寓 11000000 39.20   24 無車位 無管理
+11974 嘉義市嘉義市 嘉義市 大樓  4400000 56.39   10 無車位 無管理
 ```
 
 ---
 
 ```r
-head(dat1[sample(1:length(dat1),20),])
+head(dat1[sample(1:nrow(dat1),18),],18)
 ```
 
 ```
-Error: cannot take a sample larger than the population when 'replace = FALSE'
+            行政區   縣市 型態     房價 面積 屋齡   車位   管理
+15383 屏東縣枋寮鄉 屏東縣 透天  3800000 45.3    4 無車位 無管理
+10532 桃園縣八德市 桃園縣 大樓  8500000 50.2    1 有車位 有管理
+6084  高雄市鳳山區 高雄市 大樓  3000000 46.2   19 無車位 有管理
+11596 桃園縣桃園市 桃園縣 大樓  7890000 36.9    1 有車位 有管理
+9034  新北市淡水區 新北市 大樓 13500000 27.2    7 有車位 有管理
+10984 桃園縣蘆竹鄉 桃園縣 華廈  7650000 38.9   14 有車位 有管理
+1035  臺北市士林區 臺北市 套房 16200000 17.0    6 無車位 有管理
+8116  新北市中和區 新北市 公寓 15500000 37.7   25 有車位 有管理
+10435 桃園縣蘆竹鄉 桃園縣 大樓  7100000 44.3   19 有車位 有管理
+1499  臺中市西屯區 臺中市 大樓  3150000 23.9   19 無車位 有管理
+8804  新北市淡水區 新北市 大樓 11400000 47.9    0 有車位 有管理
+2460  臺中市西屯區 臺中市 大樓  9500000 33.9    7 有車位 有管理
+12194 新竹縣竹北市 新竹縣 大樓 26800000 97.3    1 有車位 有管理
+9308  宜蘭縣員山鄉 宜蘭縣 華廈  2950000 34.6   20 有車位 無管理
+1267  臺北市文山區 臺北市 套房  9380000 18.2    4 有車位 有管理
+4198    臺南市南區 臺南市 華廈  3660000 31.0   17 有車位 有管理
+12031 新竹縣竹北市 新竹縣 華廈  5350000 25.0    1 有車位 有管理
+15517 花蓮縣花蓮市 花蓮縣 透天  3100000 30.2   34 無車位 無管理
 ```
-
 
 ---
 ## Description 
@@ -119,7 +135,8 @@ sort(table(dat1[,1]),decreasing = TRUE)[1:5]
 
 ```r
 # pivotal table
-library(reshape);cast(data=dat1,formula=型態 ~ ., fun.aggregate=mean,value="房價")
+library(reshape);
+cast(data=dat1,formula=型態 ~ ., fun.aggregate=mean,value="房價")
 ```
 
 ```
@@ -208,7 +225,8 @@ pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5])
 <div class="rimage center"><img src="figure/unnamed-chunk-10.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" class="plot" /></div>
 
 ---
-## ggplot (Advanced Visualization)
+## ggplot (Data Visualization)
+<a class='example'>Visualization</a>
 
 ```r
 library(ggplot2);count <- sort(table(dat1$縣市),decreasing=TRUE)[1:10]
@@ -221,7 +239,7 @@ ggplot(data=df, aes(x=zone,y=count,fill=zone)) +
 <div class="rimage center"><img src="figure/unnamed-chunk-11.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" class="plot" /></div>
 
 ---
-## Histogram  -1
+## the shaple of data:Histogram -1
 
 ```r
 par(mfrow=c(1,2))
@@ -232,29 +250,7 @@ hist(dat1$面積,breaks=100,col="lightgreen",prob=TRUE,xlab="面積",main="Histo
 <div class="rimage center"><img src="figure/unnamed-chunk-12.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" class="plot" /></div>
 
 ---
-## Histogram  -2
-- http://stackoverflow.com/questions/11530010/how-to-simulate-bimodal-distribution-in-r
-
-```
-[1] 2.3
-```
-
-```
-[1] 5.3
-```
-
-```
-[1] 0.693
-```
-
-```
-[1] 1.1
-```
-
-```
-[1] 0.4
-```
-
+## becareful break argument : Histogram-2
 <div class="rimage center"><img src="figure/unnamed-chunk-13.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" class="plot" /></div>
 
 ---
@@ -283,7 +279,7 @@ hist(dat1$房價/10^6,breaks=200,col="lightgray",prob=TRUE,xlab="房價(百萬)"
 
 ```r
 par(mfrow=c(1,2))
-plot(rev(2:8),log10(y),type="l",main="earthquake scale frequency take log")
+plot(rev(2:8),log10(frequency),type="l",main="earthquake scale frequency take log")
 hist(log10(dat1$面積),breaks=20,col="blue",prob=TRUE,xlab="log10(面積)",main="Historgram")
 ```
 
@@ -312,9 +308,10 @@ hist(log10(dat1$房價),breaks=20,col="deeppink",prob=TRUE,xlab="log10(房價)",
 <div class="rimage center"><img src="figure/unnamed-chunk-18.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" class="plot" /></div>
 
 ---
-## Boxplot 
-- median : 中位數            ,  IQR : interquantile range
-- range(Q1-1.5IQR,Q3+1.5IQR)  , outlier 
+## descriptive statistics : Boxplot 
+median : 中位數            | IQR : interquantile range 
+---------------------------|------------------------------
+range(Q1-1.5IQR,Q3+1.5IQR) | outlier 
 
 ```r
 boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",main="面積")
@@ -324,7 +321,7 @@ boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",m
 
 ---
 ## It's your turn 4
-- 請繪製有五都("臺北市","新北市","臺中市","高雄市","臺南市") 透天 log10(房價) 和 套房 log10(房價)的boxplot 各一張  
+- 請繪製有五都`c("臺北市","新北市","臺中市","高雄市","臺南市")` 透天 log10(房價) 和套房 log10(房價)的boxplot 各一張  
 
 ```r
 boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",main="面積")
@@ -348,10 +345,25 @@ boxplot(log10(房價)~縣市,data=subset(dat2,型態=="套房"),las=2,ylab="log1
 <div class="rimage center"><img src="figure/unnamed-chunk-23.png" title="plot of chunk unnamed-chunk-23" alt="plot of chunk unnamed-chunk-23" class="plot" /></div>
 
 --- .segue .dark 
-## Regression
+## Modeling method: Regression
+
+--- &twocol
+## what do you see ?
+- http://en.wikipedia.org/wiki/Anscombe's_quartet
+
+*** =left
+> - ![alt text](figure/Anscombe's_quartet_data.png)
+
+*** =right
+> - <img class=center src=figure/Anscombe's_quartet_stat.png >
+
+--- 
+## Be careful to use numeber
+
+<img class=center src=figure/Anscombe's_quartet.png style="width: 750px;">
 
 ---
-## Scatter plot
+## first step : Scatter plot
 
 ```r
 par(mfrow=c(1,2))
@@ -361,8 +373,17 @@ plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)"
 
 <div class="rimage center"><img src="figure/unnamed-chunk-24.png" title="plot of chunk unnamed-chunk-24" alt="plot of chunk unnamed-chunk-24" class="plot" /></div>
 
+--- .centrepre
+## Discovery pattern
+
+九大行星半徑(R)與週期(T)關係圖
+
+<img class=center src=figure/kepler.png height=150>
+
+<img class=center src=figure/kepler_formula.png height=100>
+
 --- &twocol
-## Correlation
+## Correlation Coefficient
 *** =left
 
 ```r
@@ -376,19 +397,9 @@ c(cor(x,y),cor(log10(x),log10(y)))
 ```
 
 *** =right
-  ## Correlation coefficient by wiki
+  - Correlation coefficient by wiki
   
   ![alt text](figure/correlation_formula.png)
-
---- &twocol
-## Be careful to use numeber
-- http://en.wikipedia.org/wiki/Anscombe's_quartet
-
-*** =left
-![alt text](figure/Anscombe's_quartet.png)
-
-*** =right
-![alt text](figure/anscombe's_quartet_stat.png)
 
 ---
 ## Simple regression
@@ -401,11 +412,6 @@ abline(fit,col=2,lwd=2)
 
 <div class="rimage center"><img src="figure/unnamed-chunk-26.png" title="plot of chunk unnamed-chunk-26" alt="plot of chunk unnamed-chunk-26" class="plot" /></div>
 
----
-## Variables
-
-- $y$: response ,explained variable, dependent variable, predictand. 如: 房價、雨量
-- $x$: predictor, independnet variable... 如: (面積,型態)、(溫度、風速、氣壓)
 
 ---
 
@@ -460,6 +466,18 @@ legend("topleft",legend=round(summary(fit)$r.squared,4),title="r.squared")
 ```
 
 <div class="rimage center"><img src="figure/unnamed-chunk-29.png" title="plot of chunk unnamed-chunk-29" alt="plot of chunk unnamed-chunk-29" class="plot" /></div>
+
+
+---
+## Multiple regression - Variables
+
+- $y$: response ,explained variable, dependent variable, predictand. 如: 房價、雨量
+- $x$: predictor, independnet variable... 如: (面積,型態)、(溫度、風速、氣壓)
+
+> - ![alt text](figure/multiple_regression_formula.png)
+
+> - $$ 房價 \sim 面積 + 屋齡 + 建物型態 + 行政區 + ...$$ 
+
 
 ---
 ## Multiple regression  - Category variable
@@ -955,7 +973,7 @@ data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態,
 ## extension studies
 
 --- .segue .dark 
-## Dicision Tree
+## Data Mining: Dicision Tree
 
 ---
 ![alt text](figure/Dicision_Tree_Work.png)
@@ -1003,9 +1021,14 @@ prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 --- .segue .dark 
 ## Future
 
+--- 
+<img class=center src=figure/data_scientist.png style="width: 800px;">
+
 ---
-## 進階課程內容
+## Advanced Course 
 * GAM(Generalized Additive Model): nonlinear parameter for nonlinear model
+* Smoothing 
+* Tobit model for rainfall data
   * 進階模型配適
 * Overfitting:
   * 模型是否預測準確? (Cross Validation, model selection critera)
@@ -1017,9 +1040,12 @@ prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 ## Reference
 
 - 背後巨人: https://github.com/JohnsonHsieh
-- 
--
 
+- bimodel: http://stackoverflow.com/questions/11530010/how-to-simulate-bimodal-distribution-in-r
+
+- LogTransformation: 清華開放學堂 許文郁∕解讀大自然的語言 
+
+- Journey: http://nirvacana.com/thoughts/becoming-a-data-scientist/
 
 
 ---
