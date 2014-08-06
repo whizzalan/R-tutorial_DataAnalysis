@@ -53,7 +53,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ---
 ## Data Appearance
 ```{r }
-dat1 <- readRDS("estate_linux.rds")
+dat1 <- readRDS(DA_file("estate_linux.rds"))
 nrow(dat1)
 # random sampling
 head(dat1[sample(1:nrow(dat1),6),])
