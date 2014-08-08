@@ -10,9 +10,8 @@ widgets     : [mathjax, quiz, bootstrap]
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 logo        : Taiwan-R-logo.png
---- .segue .dark 
+---
 
-## Purpose 
 ```{r setup, include=FALSE,echo = F, message = F, warning = F, tidy = F}
 # make this an external chunk that can be included in any file
 options(width = 100,digits=3,warn=FALSE)
@@ -31,9 +30,13 @@ knit_hooks$set(plot = knitr:::hook_plot_html)
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
---- 
+--- .segue .dark 
+## Purpose 
+
+
+---
 ## 趙藤雄被羈押
-<img class=center src=figure/estate_news.png height=150>
+![alt text](figure/estate_news.png)
 
 ---
 ## 合適購屋站
@@ -43,8 +46,7 @@ knitr::opts_chunk$set(cache=TRUE)
 > - Predictor variables : 建物面積、所屬縣市、屋齡、行政區域、建物型態
 > - 建物型態: 華廈(10層含以下有電梯)、套房(1房1廳1衛)、公寓(5樓含以下無電梯)、大樓(11層含以上有電梯)
 
-<img class=center src=figure/govdata.png style="width: 650px;">
-
+![Image](figure/govdata.png)
 
 
 --- .segue .dark 
@@ -55,14 +57,14 @@ knitr::opts_chunk$set(cache=TRUE)
 ```{r }
 dat1 <- readRDS("estate_linux.rds")
 nrow(dat1)
-# random sampling
-head(dat1[sample(1:nrow(dat1),6),])
+head(dat1[sample(1:length(dat1),6),])
 ```
 
 ---
 ```{r}
-head(dat1[sample(1:nrow(dat1),18),],18)
+head(dat1[sample(1:length(dat1),20),])
 ```
+
 
 ---
 ## Description 
@@ -82,8 +84,7 @@ sort(table(dat1[,1]),decreasing = TRUE)[1:5]
 - $y \sim x$
 ```{r}
 # pivotal table
-library(reshape);
-cast(data=dat1,formula=型態 ~ ., fun.aggregate=mean,value="房價")
+library(reshape);cast(data=dat1,formula=型態 ~ ., fun.aggregate=mean,value="房價")
 ```
 
 ---
@@ -129,8 +130,7 @@ pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5])
 ```
 
 ---
-## ggplot (Data Visualization)
-<a class='example'>Visualization</a>
+## ggplot (Advanced Visualization)
 ```{r  fig.width=9, fig.height=3.5, warning=FALSE}
 library(ggplot2);count <- sort(table(dat1$縣市),decreasing=TRUE)[1:10]
 zone <- factor(names(count),levels=names(count),ordered=TRUE)
@@ -140,7 +140,7 @@ ggplot(data=df, aes(x=zone,y=count,fill=zone)) +
 ```
 
 ---
-## the shaple of data:Histogram -1
+## Histogram  -1
 ```{r  fig.width=9, fig.height=3.5}
 par(mfrow=c(1,2))
 hist(dat1$面積,breaks=5,col="lightblue",prob=TRUE,xlab="面積",main="Historgram")
@@ -148,7 +148,8 @@ hist(dat1$面積,breaks=100,col="lightgreen",prob=TRUE,xlab="面積",main="Histo
 ```
 
 ---
-## becareful break argument : Histogram-2
+## Histogram  -2
+- http://stackoverflow.com/questions/11530010/how-to-simulate-bimodal-distribution-in-r
 ```{r  echo=FALSE, fig.width=9, fig.height=3.5}
 par(mfrow=c(1,2))
 bimodalDistFunc <- function (n,cpct, mu1, mu2, sig1, sig2) {
@@ -157,11 +158,12 @@ bimodalDistFunc <- function (n,cpct, mu1, mu2, sig1, sig2) {
   flag <- rbinom(n,size=1,prob=cpct)
   y <- y0*(1 - flag) + y1*flag 
 }
-mu1 <- log(10) 
+mu1 <- log(10)   
 mu2 <- log(200)
 sig1<- log(2)
 sig2<-log(3)
 cpct <- 0.4
+mu1;mu2;sig1;sig2;cpct
 
 bimodalData <- bimodalDistFunc(n=10000,cpct,mu1,mu2, sig1,sig2)
 hist(log(bimodalData),breaks=200)
@@ -195,7 +197,7 @@ hist(rep(levels,frequency),main="earthquake scale frequency")
 ## Log transformation for ratio data -2
 ```{r  fig.width=9, fig.height=3.5, warning=FALSE}
 par(mfrow=c(1,2))
-plot(rev(2:8),log10(frequency),type="l",main="earthquake scale frequency take log")
+plot(rev(2:8),log10(y),type="l",main="earthquake scale frequency take log")
 hist(log10(dat1$面積),breaks=20,col="blue",prob=TRUE,xlab="log10(面積)",main="Historgram")
 ```
 
@@ -218,17 +220,16 @@ hist(log10(dat1$房價),breaks=20,col="deeppink",prob=TRUE,xlab="log10(房價)",
 ```
 
 ---
-## descriptive statistics : Boxplot 
-median : 中位數            | IQR : interquantile range 
----------------------------|------------------------------
-range(Q1-1.5IQR,Q3+1.5IQR) | outlier 
+## Boxplot 
+- median : 中位數            ,  IQR : interquantile range
+- range(Q1-1.5IQR,Q3+1.5IQR)  , outlier 
 ```{r  fig.width=6, fig.height=4.5, warning=FALSE}
 boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",main="面積")
 ```
 
 ---
 ## It's your turn 4
-- 請繪製有五都`c("臺北市","新北市","臺中市","高雄市","臺南市")` 透天 log10(房價) 和套房 log10(房價)的boxplot 各一張  
+- 請繪製有五都("臺北市","新北市","臺中市","高雄市","臺南市") 透天 log10(房價) 和 套房 log10(房價)的boxplot 各一張  
 ```{r eval=FALSE}
 boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",main="面積")
 ```
@@ -255,42 +256,18 @@ boxplot(log10(房價)~縣市,data=subset(dat2,型態=="套房"),las=2,ylab="log1
 ```
 
 --- .segue .dark 
-## Modeling method: Regression
-
---- &twocol
-## what do you see ?
-- http://en.wikipedia.org/wiki/Anscombe's_quartet
-
-*** =left
-> - ![alt text](figure/Anscombe's_quartet_data.png)
-
-*** =right
-> - <img class=center src=figure/Anscombe's_quartet_stat.png >
-
---- 
-## Be careful to use numeber
-
-<img class=center src=figure/Anscombe's_quartet.png style="width: 750px;">
+## Regression
 
 ---
-## first step : Scatter plot
+## Scatter plot
 ```{r  fig.width=9, fig.height=4.5, warning=FALSE}
 par(mfrow=c(1,2))
 plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
 plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
 ```
 
---- .centrepre
-## Discovery pattern
-
-九大行星半徑(R)與週期(T)關係圖
-
-<img class=center src=figure/kepler.png height=150>
-
-<img class=center src=figure/kepler_formula.png height=100>
-
 --- &twocol
-## Correlation Coefficient
+## Correlation
 *** =left
 ```{r}
 x <- dat1$面積
@@ -299,9 +276,19 @@ c(cor(x,y),cor(log10(x),log10(y)))
 ```
 
 *** =right
-  - Correlation coefficient by wiki
+  ## Correlation coefficient by wiki
   
   ![alt text](figure/correlation_formula.png)
+
+--- &twocol
+## Be careful to use numeber
+- http://en.wikipedia.org/wiki/Anscombe's_quartet
+
+*** =left
+![alt text](figure/Anscombe's_quartet.png)
+
+*** =right
+![alt text](figure/anscombe's_quartet_stat.png)
 
 ---
 ## Simple regression
@@ -311,6 +298,11 @@ fit <- lm(log10(y)~log10(x))
 abline(fit,col=2,lwd=2)
 ```
 
+---
+## Variables
+
+- $y$: response ,explained variable, dependent variable, predictand. 如: 房價、雨量
+- $x$: predictor, independnet variable... 如: (面積,型態)、(溫度、風速、氣壓)
 
 ---
 ```{r warning=FALSE}
@@ -339,18 +331,6 @@ plot(x,y,log="xy");fit<-lm(log10(y)~log10(x))
 abline(fit,col=2)
 legend("topleft",legend=round(summary(fit)$r.squared,4),title="r.squared")
 ```
-
-
----
-## Multiple regression - Variables
-
-- $y$: response ,explained variable, dependent variable, predictand. 如: 房價、雨量
-- $x$: predictor, independnet variable... 如: (面積,型態)、(溫度、風速、氣壓)
-
-> - ![alt text](figure/multiple_regression_formula.png)
-
-> - $$ 房價 \sim 面積 + 屋齡 + 建物型態 + 行政區 + ...$$ 
-
 
 ---
 ## Multiple regression  - Category variable
@@ -459,7 +439,7 @@ data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態,
 ## extension studies
 
 --- .segue .dark 
-## Data Mining: Dicision Tree
+## Dicision Tree
 
 ---
 ![alt text](figure/Dicision_Tree_Work.png)
@@ -500,14 +480,9 @@ prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 --- .segue .dark 
 ## Future
 
---- 
-<img class=center src=figure/data_scientist.png style="width: 800px;">
-
 ---
-## Advanced Course 
+## 進階課程內容
 * GAM(Generalized Additive Model): nonlinear parameter for nonlinear model
-* Smoothing 
-* Tobit model for rainfall data
   * 進階模型配適
 * Overfitting:
   * 模型是否預測準確? (Cross Validation, model selection critera)
@@ -519,12 +494,9 @@ prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 ## Reference
 
 - 背後巨人: https://github.com/JohnsonHsieh
+- 
+-
 
-- bimodel: http://stackoverflow.com/questions/11530010/how-to-simulate-bimodal-distribution-in-r
-
-- LogTransformation: 清華開放學堂 許文郁∕解讀大自然的語言 
-
-- Journey: http://nirvacana.com/thoughts/becoming-a-data-scientist/
 
 
 ---
@@ -540,7 +512,7 @@ m31 <- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=dat1)
 m32 <- gam(log10(房價)~s(log10(面積))+車位+s(屋齡)+型態+行政區, data=dat1)
 
 # Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame("linear model"=summary(m31)$adj.r.sq,"additive model"=summary(m32)$r.sq)
+data.frame("linear model"=summary(m31)$r.sq,"additive model"=summary(m32)$r.sq)
 ```
 
 ---
