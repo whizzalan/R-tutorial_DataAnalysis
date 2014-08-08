@@ -1,0 +1,596 @@
+---
+title       : Data analysis with R
+subtitle    : "Sunday, Aug 31, 2014"
+author      : George & Johnson
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax, quiz, bootstrap]
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+logo        : Taiwan-R-logo.png
+--- .segue .dark 
+
+## Purpose 
+```{r setup, include=FALSE,echo = F, message = F, warning = F, tidy = F}
+# make this an external chunk that can be included in any file
+options(width = 100,digits=3,warn=FALSE)
+opts_chunk$set(message = FALSE, eval=TRUE,fig.align = "center", warning = FALSE, comment = NA, dpi = 100, fig.width=6, fig.height=4,tidy = FALSE, cache = FALSE)
+
+options(xtable.type = 'html')
+knit_hooks$set(inline = function(x) {
+  if(is.numeric(x)) {
+    round(x, getOption('digits'))
+  } else {
+    paste(as.character(x), collapse = ', ')
+  }
+})
+knit_hooks$set(plot = knitr:::hook_plot_html)
+
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+--- 
+## 趙藤雄被羈押
+<img class=center src=figure/estate_news.png height=150>
+
+---
+## 合適購屋站
+> - 充斥一堆房價資訊，但每個家庭也都有各自的喜好條件
+> - simple model: 可以指定理想房屋型態、條件，可以提供你參考的房價
+> - Data source：不動產實價登錄資料 ( ~ 2014年5月16日)
+> - Predictor variables : 建物面積、所屬縣市、屋齡、行政區域、建物型態
+> - 建物型態: 華廈(10層含以下有電梯)、套房(1房1廳1衛)、公寓(5樓含以下無電梯)、大樓(11層含以上有電梯)
+
+<img class=center src=figure/govdata.png style="width: 650px;">
+
+
+
+--- .segue .dark 
+## Exploratory 
+
+---
+## Data Appearance
+```{r }
+dat1 <- readRDS("estate_linux.rds")
+nrow(dat1)
+# random sampling
+head(dat1[sample(1:nrow(dat1),6),])
+```
+
+---
+```{r}
+head(dat1[sample(1:nrow(dat1),18),],18)
+```
+
+---
+## Description 
+```{r }
+summary(dat1)
+```
+
+--- 
+## Tabulating
+```{r}
+# tabulating
+sort(table(dat1[,1]),decreasing = TRUE)[1:5]
+```
+
+---
+## Formula & Pivot table
+- $y \sim x$
+```{r}
+# pivotal table
+library(reshape);
+cast(data=dat1,formula=型態 ~ ., fun.aggregate=mean,value="房價")
+```
+
+---
+## It's your turn 1
+- 試練習各縣市在不同型態的房屋數量，如何操作?
+```{r eval=FALSE}
+library(reshape)
+cast(dat1,型態 ~ ., fun.aggregate=mean,value="房價")
+```
+
+> - Hint: cast + table
+
+---
+```{r cache=TRUE}
+# Pivot table (Ans1)
+cast(dat1,縣市~.,fun.aggregate=table,value="型態")
+```
+
+---
+## Graphic is more intutive
+```{r  warning=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
+par(mfrow=c(1,2))
+barplot(sort(table(dat1$縣市),decreasing=TRUE)[1:10],las=1,horiz=TRUE)
+pie(sort(table(dat1$型態),decreasing=TRUE))
+```
+
+---
+## It's your turn 2
+```{r eval=FALSE}
+par(mfrow=c(1,2))
+barplot(sort(table(dat1$縣市),decreasing=TRUE)[1:10],las=1,horiz=TRUE)
+pie(sort(table(dat1$型態),decreasing=TRUE))
+```
+- 1. 按型態的barplot是?
+- 2. 前五大縣市的pie plot?
+
+---
+```{r  fig.width=9, fig.height=4.5, warning=FALSE}
+# Barplot & Pie plot (Ans2)
+par(mfrow=c(1,2))
+barplot(sort(table(dat1$型態),decreasing=TRUE),las=1,horiz=TRUE)
+pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5]) 
+```
+
+---
+## ggplot (Data Visualization)
+<a class='example'>Visualization</a>
+```{r  fig.width=9, fig.height=3.5, warning=FALSE}
+library(ggplot2);count <- sort(table(dat1$縣市),decreasing=TRUE)[1:10]
+zone <- factor(names(count),levels=names(count),ordered=TRUE)
+df <- data.frame(count, zone)
+ggplot(data=df, aes(x=zone,y=count,fill=zone)) + 
+  geom_bar(colour="black",stat="identity") + guides(fill=FALSE)
+```
+
+---
+## the shaple of data:Histogram -1
+```{r  fig.width=9, fig.height=3.5}
+par(mfrow=c(1,2))
+hist(dat1$面積,breaks=5,col="lightblue",prob=TRUE,xlab="面積",main="Historgram")
+hist(dat1$面積,breaks=100,col="lightgreen",prob=TRUE,xlab="面積",main="Historgram")
+```
+
+---
+## becareful break argument : Histogram-2
+```{r  echo=FALSE, fig.width=9, fig.height=3.5}
+par(mfrow=c(1,2))
+bimodalDistFunc <- function (n,cpct, mu1, mu2, sig1, sig2) {
+  y0 <- rlnorm(n,mean=mu1, sd = sig1)
+  y1 <- rlnorm(n,mean=mu2, sd = sig2)
+  flag <- rbinom(n,size=1,prob=cpct)
+  y <- y0*(1 - flag) + y1*flag 
+}
+mu1 <- log(10) 
+mu2 <- log(200)
+sig1<- log(2)
+sig2<-log(3)
+cpct <- 0.4
+
+bimodalData <- bimodalDistFunc(n=10000,cpct,mu1,mu2, sig1,sig2)
+hist(log(bimodalData),breaks=200)
+hist(log(bimodalData),breaks=10)
+```
+
+---
+## Histogram  -3
+```{r  fig.width=9, fig.height=3.5}
+par(mfrow=c(1,2))
+hist(dat1$房價/10^6,breaks=20,col="lightyellow",prob=TRUE,xlab="房價(百萬)",main="Historgram")
+hist(dat1$房價/10^6,breaks=200,col="lightgray",prob=TRUE,xlab="房價(百萬)",main="Historgram")
+```
+
+--- &twocol
+## Log transformation for ratio data -1
+> - what kind of data: 右偏，如: 芮氏規模地震、分貝、家庭年收入、成本、雨量。
+> - even more:  恐怖攻擊造成死亡人數，地震規模每年發生次數。
+
+*** {name: left}
+![Image](figure/QUAKE_FREQUENCY.png)
+*** {name: right}
+```{r  echo=FALSE}
+# log earthquake
+frequency <- c(1,17,134,1319,13000,130000,1300000)
+levels <- sort(c(2:8),decreasing=T)
+hist(rep(levels,frequency),main="earthquake scale frequency")
+```
+
+---
+## Log transformation for ratio data -2
+```{r  fig.width=9, fig.height=3.5, warning=FALSE}
+par(mfrow=c(1,2))
+plot(rev(2:8),log10(frequency),type="l",main="earthquake scale frequency take log")
+hist(log10(dat1$面積),breaks=20,col="blue",prob=TRUE,xlab="log10(面積)",main="Historgram")
+```
+
+---
+## It's your turn 3
+```{r eval=FALSE}
+hist(dat1$面積,breaks=100,col="lightgreen",prob=TRUE,xlab="面積",main="Historgram")
+hist(log10(dat1$面積),breaks=5,col="blue",prob=TRUE,xlab="log10(面積)",main="Historgram")
+```
+- 房價(單位百萬)直方圖, log房價(單位百萬)直方圖
+
+> - HINT: 房價單位百萬，寬度調小
+
+---
+```{r  fig.width=9, fig.height=4.5, warning=FALSE}
+# Histogram (Ans3)
+par(mfrow=c(1,2))
+hist(dat1$房價/10^6,breaks=100,col="lightpink",prob=TRUE,xlab="房價(百萬)",main="Historgram")
+hist(log10(dat1$房價),breaks=20,col="deeppink",prob=TRUE,xlab="log10(房價)",main="Historgram")
+```
+
+---
+## descriptive statistics : Boxplot 
+median : 中位數            | IQR : interquantile range 
+---------------------------|------------------------------
+range(Q1-1.5IQR,Q3+1.5IQR) | outlier 
+```{r  fig.width=6, fig.height=4.5, warning=FALSE}
+boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",main="面積")
+```
+
+---
+## It's your turn 4
+- 請繪製有五都`c("臺北市","新北市","臺中市","高雄市","臺南市")` 透天 log10(房價) 和套房 log10(房價)的boxplot 各一張  
+```{r eval=FALSE}
+boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",main="面積")
+```
+- HINT:
+```{r eval=FALSE}
+dat2 <- dat1[dat1$縣市 %in% c("臺北市","臺中市","新北市","臺南市","高雄市") ,]
+dat2$縣市 <- factor(dat2$縣市,levels=c("臺北市","臺中市","新北市","臺南市","高雄市"))
+```
+
+---
+```{r  eval=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
+# Boxplot (Ans4)
+dat2 <- dat1[dat1$縣市 %in% c("臺北市","臺中市","新北市","臺南市","高雄市") ,]
+dat2$縣市 <- factor(dat2$縣市,levels=c("臺北市","臺中市","新北市","臺南市","高雄市"))
+boxplot(log10(房價)~縣市,data=subset(dat2,型態=="透天"),las=2,ylab="log10(房價)",main="透天")
+boxplot(log10(房價)~縣市,data=subset(dat2,型態=="套房"),las=2,ylab="log10(房價)",main="套房")
+```
+```{r  echo=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
+par(mfrow=c(1,2))
+dat2 <- dat1[dat1$縣市 %in% c("臺北市","臺中市","新北市","臺南市","高雄市") ,]
+dat2$縣市 <- factor(dat2$縣市,levels=c("臺北市","臺中市","新北市","臺南市","高雄市"))
+boxplot(log10(房價)~縣市,data=subset(dat2,型態=="透天"),las=2,ylab="log10(房價)",main="透天")
+boxplot(log10(房價)~縣市,data=subset(dat2,型態=="套房"),las=2,ylab="log10(房價)",main="套房")
+```
+
+--- .segue .dark 
+## Modeling method: Regression
+
+--- &twocol
+## what do you see ?
+- http://en.wikipedia.org/wiki/Anscombe's_quartet
+
+*** =left
+> - ![alt text](figure/Anscombe's_quartet_data.png)
+
+*** =right
+> - <img class=center src=figure/Anscombe's_quartet_stat.png >
+
+--- 
+## Be careful to use numeber
+
+<img class=center src=figure/Anscombe's_quartet.png style="width: 750px;">
+
+---
+## first step : Scatter plot
+```{r  fig.width=9, fig.height=4.5, warning=FALSE}
+par(mfrow=c(1,2))
+plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
+plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
+```
+
+--- .centrepre
+## Discovery pattern
+
+九大行星半徑(R)與週期(T)關係圖
+
+<img class=center src=figure/kepler.png height=150>
+
+<img class=center src=figure/kepler_formula.png height=100>
+
+--- &twocol
+## Correlation Coefficient
+*** =left
+```{r}
+x <- dat1$面積
+y <- dat1$房價/10^4
+c(cor(x,y),cor(log10(x),log10(y)))
+```
+
+*** =right
+  - Correlation coefficient by wiki
+  
+  ![alt text](figure/correlation_formula.png)
+
+---
+## Simple regression
+```{r fig.width=7, fig.align = 'center'}
+plot(x,y,xlab="面積(坪)",ylab="房價(萬元)",log="xy")
+fit <- lm(log10(y)~log10(x))
+abline(fit,col=2,lwd=2)
+```
+
+
+---
+```{r warning=FALSE}
+summary(fit)
+```
+
+---
+## It's your turn 5
+```{r eval=FALSE}
+x <- dat1$面積
+y <- dat1$房價/10^4
+c(cor(x,y),cor(log10(x),log10(y)))
+plot(x,y,xlab="面積(坪)",ylab="房價(萬元)",log="xy")
+fit <- lm(log10(y)~log10(x))
+abline(fit,col=2,lwd=2)
+```
+- 試作 臺北市房價 簡單回歸模型
+
+---
+
+```{r  fig.width=9, fig.height=4, warning=FALSE, fig.align = 'center'}
+# Simple regression (Ans5)
+dat3 <- dat1[dat1$縣市=="臺北市",]
+x <- dat3$面積;y <- dat3$房價/10^4
+plot(x,y,log="xy");fit<-lm(log10(y)~log10(x))
+abline(fit,col=2)
+legend("topleft",legend=round(summary(fit)$r.squared,4),title="r.squared")
+```
+
+
+---
+## Multiple regression - Variables
+
+- $y$: response ,explained variable, dependent variable, predictand. 如: 房價、雨量
+- $x$: predictor, independnet variable... 如: (面積,型態)、(溫度、風速、氣壓)
+
+> - ![alt text](figure/multiple_regression_formula.png)
+
+> - $$ 房價 \sim 面積 + 屋齡 + 建物型態 + 行政區 + ...$$ 
+
+
+---
+## Multiple regression  - Category variable
+```{r }
+library(ggplot2)
+dat4 <- dat1
+names(dat4) <- c("zone","admin","type","price","area","age","parking","maintance")
+qplot(area,price,data=dat4,log="xy") + geom_smooth(method="lm") + facet_grid(parking ~ maintance)
+```
+
+---
+```{r}
+m11 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理, data=dat1)
+summary(m11)
+
+```
+
+---
+```{r}
+m12 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區, data=dat1)
+summary(m12)
+```
+
+---
+## It's your turn 6 
+```{r eval=FALSE}
+m11 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理, data=dat1);summary(m11)
+m12 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區, data=dat1)
+```
+- 試建立臺北市 multiple regression(predictor: +行政區)，並找出R.squared
+
+---
+```{r  fig.width=12, fig.height=3, warning=FALSE}
+# Multiple regression & category variable-1 (Ans6)-1
+m21 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理, data=dat3)
+m22 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區, data=dat3)
+# R-squared, 越趨近1模型解釋能力越好
+data.frame("model.taiwan.1"=summary(m11)$r.sq, "model.taiwan.all"=summary(m12)$r.sq, 
+           "model.taipei.1"=summary(m21)$r.sq, "model.taipei.all"=summary(m22)$r.sq)
+```
+
+---
+```{r  fig.width=12, fig.height=3, warning=FALSE}
+summary(m21)
+```
+
+---
+```{r  fig.width=12, fig.height=3, warning=FALSE}
+summary(m22)
+```
+
+---
+```{r  echo=TRUE}
+forecast <- dat1[1:5, c(1,2,3,5,6,7,8)];rownames(forecast) <- 1:5
+forecast$面積 <- c(30,30,8,40,40)
+forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
+forecast$行政區 <- paste("臺北市",forecast$行政區,sep="")
+forecast$屋齡 <- c(30,6,6,8,8)
+forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
+forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
+forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
+# prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
+tmp <- predict(m12, newdata=forecast, se.fit=TRUE)
+pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
+data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
+           "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
+```
+
+---
+## It's your trun 7
+```{r eval=FALSE}
+forecast <- dat1[1:5, c(1,2,3,5,6,7,8)];rownames(forecast) <- 1:5
+forecast$面積 <- c(30,30,8,40,40)
+forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
+forecast$行政區 <- paste("臺北市",forecast$行政區,sep="")
+forecast$屋齡 <- c(30,6,6,8,8)
+forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
+forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
+forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
+# prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
+tmp <- predict(m12, newdata=forecast, se.fit=TRUE)
+pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
+data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
+           "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
+```
+- 試練習直接使用臺北市資料所建立之模型，作以上預測。
+
+---
+```{r  echo=TRUE}
+forecast <- dat3[1:5, c(1,3,5,6,7,8)];rownames(forecast) <- 1:5
+forecast$面積 <- c(30,30,8,40,40)
+forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
+forecast$行政區 <- paste("臺北市",forecast$行政區,sep="")
+forecast$屋齡 <- c(30,6,6,8,8)
+forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
+forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
+forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
+# prediction
+tmp <- predict(m22, newdata=forecast, se.fit=TRUE)
+pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
+data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
+           "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
+```
+
+---
+## extension studies
+
+--- .segue .dark 
+## Data Mining: Dicision Tree
+
+---
+![alt text](figure/Dicision_Tree_Work.png)
+
+---
+## Dicision Tree
+```{r cache=TRUE}
+library(rpart)
+dat3$房價百萬 <- dat3$房價/10^6
+fit <- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
+library(rpart.plot)
+prp(fit,extra=1,col=2,box.col="lightgray",shadow.col="gray")
+```
+
+---
+## It's your turn 8
+```{r eval=FALSE}
+library(rpart)
+dat3$房價百萬 <- dat3$房價/10^6
+fit <- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
+library(rpart.plot)
+prp(fit,extra=1)
+```
+- 試練習五都 Disicion Tree
+
+---
+## Dicision Tree (Ans8)
+```{r cache=TRUE}
+dat2$房價百萬 <- dat2$房價/10^6
+fit2 <- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
+prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
+```
+
+---
+## extension studies
+
+
+--- .segue .dark 
+## Future
+
+--- 
+<img class=center src=figure/data_scientist.png style="width: 800px;">
+
+---
+## Advanced Course 
+* GAM(Generalized Additive Model): nonlinear parameter for nonlinear model
+* Smoothing 
+* Tobit model for rainfall data
+  * 進階模型配適
+* Overfitting:
+  * 模型是否預測準確? (Cross Validation, model selection critera)
+
+* Evaluation: 
+  * 校驗模型準確性(RMSE,MAE,Recall & Recall)
+
+---
+## Reference
+
+- 背後巨人: https://github.com/JohnsonHsieh
+
+- bimodel: http://stackoverflow.com/questions/11530010/how-to-simulate-bimodal-distribution-in-r
+
+- LogTransformation: 清華開放學堂 許文郁∕解讀大自然的語言 
+
+- Journey: http://nirvacana.com/thoughts/becoming-a-data-scientist/
+
+
+---
+# non-linear coefficent(補充)
+
+---
+## GAM model
+```{r cache=TRUE}
+library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m31 <- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=dat1)
+# fit addiive model with two smooth terms
+m32 <- gam(log10(房價)~s(log10(面積))+車位+s(屋齡)+型態+行政區, data=dat1)
+
+# Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame("linear model"=summary(m31)$adj.r.sq,"additive model"=summary(m32)$r.sq)
+```
+
+---
+## GAM model parameter : smoothing parameter
+```{r  echo=TRUE, warning=FALSE}
+par(cex=1.2, mfrow=c(1,2))
+plot(m32, select=1, lwd=2) 
+abline(h=m31$coefficients[["log10(面積)"]], lwd=2, col=2)
+legend("topleft", c("Smooth term", "Linear term"), col=1:2, lty=1, lwd=2, bty="n")
+plot(m32, select=2, lwd=2)
+abline(h=m31$coefficients[["屋齡"]], lwd=2, col=2)
+```
+
+---
+## Compare Multiple regression and GAM model Answer
+```{r cache=TRUE}
+library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m_new1 <- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
+# fit addiive model with two smooth terms
+m_new2 <- gam(log10(房價)~s(log10(面積))+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
+# Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame("linear model"=summary(m_new1)$adj.r.sq, "additive model"=summary(m_new2)$r.sq)
+```
+
+---
+## It's your turn 7+1
+```{r eval=FALSE}
+library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m_new1 <- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
+# fit addiive model with two smooth terms
+m_new2 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
+# Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame("linear model"=summary(m_new1)$adj.r.sq, "additive model"=summary(m_new2)$r.sq)
+```
+- 試比較臺北市lm與gam模型，參數同上
+
+---
+## Multiple regression & GAM (Ans7+1)
+```{r cache=TRUE}
+library(mgcv) # provides functions for generalized additive modelling
+# fit linear model
+m_new1_taip <- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=dat3)
+# fit addiive model with two smooth terms
+m_new2_taip <- gam(log10(房價)~s(log10(面積))+車位+s(屋齡)+型態+行政區, data=dat3)
+# Compare adjusted R-squared, 越趨近1模型配適度越好
+data.frame("linear model"=summary(m_new1_taip)$adj.r.sq, "additive model"=summary(m_new2_taip)$r.sq)
+```
+
+
+
+
