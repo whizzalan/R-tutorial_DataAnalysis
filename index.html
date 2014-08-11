@@ -101,23 +101,25 @@
     <h2>Data Appearance</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">dat1 &lt;- readRDS(DA_file(&quot;estate_linux.rds&quot;))
+    <pre><code class="r">library(&#39;DSC2014Tutorial&#39;)
+dat1 &lt;- readRDS(DA_file(&quot;estate_linux.rds&quot;))
+nrow(dat1)
 </code></pre>
 
-<pre><code>Error: could not find function &quot;DA_file&quot;
-</code></pre>
-
-<pre><code class="r">nrow(dat1)
-</code></pre>
-
-<pre><code>Error: object &#39;dat1&#39; not found
+<pre><code>[1] 5431
 </code></pre>
 
 <pre><code class="r"># random sampling
 head(dat1[sample(1:nrow(dat1),6),])
 </code></pre>
 
-<pre><code>Error: object &#39;dat1&#39; not found
+<pre><code>            行政區   縣市 型態     房價 面積 屋齡   車位   管理
+10428 桃園縣大園鄉 桃園縣 大樓 16600000 67.9    1 有車位 無管理
+3776    臺南市東區 臺南市 大樓  5700000 47.9   23 有車位 有管理
+6310  高雄市湖內區 高雄市 透天  6800000 57.8    4 無車位 無管理
+6558  高雄市林園區 高雄市 透天  1450000 38.4   33 無車位 無管理
+4114    臺南市南區 臺南市 華廈  2380000 33.2   31 無車位 有管理
+2500  臺中市南屯區 臺中市 華廈 11000000 60.7   19 無車位 有管理
 </code></pre>
 
   </article>
@@ -129,25 +131,25 @@ head(dat1[sample(1:nrow(dat1),6),])
     <pre><code class="r">head(dat1[sample(1:nrow(dat1),18),],18)
 </code></pre>
 
-<pre><code>            行政區   縣市 型態     房價 面積 屋齡   車位   管理
-15383 屏東縣枋寮鄉 屏東縣 透天  3800000 45.3    4 無車位 無管理
-10532 桃園縣八德市 桃園縣 大樓  8500000 50.2    1 有車位 有管理
-6084  高雄市鳳山區 高雄市 大樓  3000000 46.2   19 無車位 有管理
-11596 桃園縣桃園市 桃園縣 大樓  7890000 36.9    1 有車位 有管理
-9034  新北市淡水區 新北市 大樓 13500000 27.2    7 有車位 有管理
-10984 桃園縣蘆竹鄉 桃園縣 華廈  7650000 38.9   14 有車位 有管理
-1035  臺北市士林區 臺北市 套房 16200000 17.0    6 無車位 有管理
-8116  新北市中和區 新北市 公寓 15500000 37.7   25 有車位 有管理
-10435 桃園縣蘆竹鄉 桃園縣 大樓  7100000 44.3   19 有車位 有管理
-1499  臺中市西屯區 臺中市 大樓  3150000 23.9   19 無車位 有管理
-8804  新北市淡水區 新北市 大樓 11400000 47.9    0 有車位 有管理
-2460  臺中市西屯區 臺中市 大樓  9500000 33.9    7 有車位 有管理
-12194 新竹縣竹北市 新竹縣 大樓 26800000 97.3    1 有車位 有管理
-9308  宜蘭縣員山鄉 宜蘭縣 華廈  2950000 34.6   20 有車位 無管理
-1267  臺北市文山區 臺北市 套房  9380000 18.2    4 有車位 有管理
-4198    臺南市南區 臺南市 華廈  3660000 31.0   17 有車位 有管理
-12031 新竹縣竹北市 新竹縣 華廈  5350000 25.0    1 有車位 有管理
-15517 花蓮縣花蓮市 花蓮縣 透天  3100000 30.2   34 無車位 無管理
+<pre><code>            行政區   縣市 型態     房價  面積 屋齡   車位   管理
+11242 桃園縣蘆竹鄉 桃園縣 大樓 15000000 117.4   14 有車位 有管理
+6972  新北市新莊區 新北市 華廈  7300000  24.8   11 無車位 有管理
+12497 新竹縣竹北市 新竹縣 大樓 15700000  71.4    7 有車位 有管理
+7598  新北市中和區 新北市 大樓  3600000  13.3   18 無車位 有管理
+1996  臺中市沙鹿區 臺中市 透天  5000000  24.2   40 無車位 無管理
+11074 桃園縣桃園市 桃園縣 大樓 23800000  78.5    1 有車位 有管理
+8960  新北市板橋區 新北市 套房  8220000  11.2    4 無車位 有管理
+12547 苗栗縣公館鄉 苗栗縣 透天  3900000  44.5   15 無車位 無管理
+8616  新北市汐止區 新北市 套房  2400000  11.1   18 無車位 有管理
+12030 新竹縣竹北市 新竹縣 華廈  5400000  25.0    1 有車位 有管理
+8035  新北市淡水區 新北市 大樓  6130000  28.8    1 有車位 有管理
+7278  新北市中和區 新北市 公寓  9250000  27.6   29 有車位 無管理
+10543 桃園縣八德市 桃園縣 大樓  8850000  46.3    1 有車位 有管理
+10408 桃園縣楊梅市 桃園縣 公寓  1400000  20.9   32 無車位 無管理
+8642  新北市新店區 新北市 大樓 13200000  23.4    5 有車位 有管理
+5193  高雄市楠梓區 高雄市 大樓  2550000  32.7   20 無車位 有管理
+8545  新北市樹林區 新北市 大樓  6950000  33.7   20 有車位 有管理
+2781  臺中市西屯區 臺中市 套房  2900000  10.9    6 無車位 有管理
 </code></pre>
 
   </article>
@@ -252,7 +254,8 @@ dcast(dat1,型態 ~ ., fun.aggregate=mean,value.var=&quot;房價&quot;)
 <slide class="" id="slide-11" style="background:;">
   <article data-timings="">
     <pre><code class="r"># Pivot table (Ans1)
-cast(dat1,縣市~.,fun.aggregate=table,value=&quot;型態&quot;)
+library(reshape)
+cast(data=dat1,formula=縣市 ~ ., fun.aggregate=table,value=&quot;型態&quot;)
 </code></pre>
 
 <pre><code>     縣市 公寓 大樓 套房 華廈 透天
@@ -277,6 +280,9 @@ cast(dat1,縣市~.,fun.aggregate=table,value=&quot;型態&quot;)
 19 金門縣    0    0    0    0    1
 20 雲林縣    0    4    0   12   46
 21 高雄市   57  293   14   67  171
+</code></pre>
+
+<pre><code class="r">#dcast(data=dat1,formula=縣市 ~ ., fun.aggregate=table,value.var=&quot;型態&quot;)
 </code></pre>
 
   </article>
@@ -545,73 +551,6 @@ boxplot(log10(房價)~縣市,data=subset(dat2,型態==&quot;套房&quot;),las=2,
 
 <slide class="" id="slide-27" style="background:;">
   <hgroup>
-    <h2>what do you see ?</h2>
-  </hgroup>
-  <article data-timings="">
-    <ul>
-<li><a href="http://en.wikipedia.org/wiki/Anscombe&#x27;s_quartet">http://en.wikipedia.org/wiki/Anscombe&#39;s_quartet</a></li>
-</ul>
-
-<div style='float:left;width:48%;' class='centered'>
-  <ul class = "build incremental">
-<li><img class=center src=figure/Anscombe's_quartet_data.png style="width: 850px;"></li>
-</ul>
-
-</div>
-<div style='float:right;width:48%;'>
-  <ul class = "build incremental">
-<li><img class=center src=figure/Anscombe's_quartet_stat_masked.png style="width: 900px;"></li>
-</ul>
-
-</div>
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-28" style="background:;">
-  <hgroup>
-    <h2>Be careful to use numeber</h2>
-  </hgroup>
-  <article data-timings="">
-    <p><img class=center src=figure/Anscombe's_quartet.png style="width: 750px;"></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-29" style="background:;">
-  <hgroup>
-    <h2>first step : Scatter plot</h2>
-  </hgroup>
-  <article data-timings="">
-    <pre><code class="r">par(mfrow=c(1,2))
-plot(dat1$面積,dat1$房價/10^4,xlab=&quot;面積(坪)&quot;,ylab=&quot;房價(萬元)&quot;)
-plot(dat1$面積,dat1$房價/10^4,xlab=&quot;log面積(坪)&quot;,ylab=&quot;log房價(萬元)&quot;,log=&quot;xy&quot;)
-</code></pre>
-
-<div class="rimage center"><img src="figure/unnamed-chunk-24.png" title="plot of chunk unnamed-chunk-24" alt="plot of chunk unnamed-chunk-24" class="plot" /></div>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="centrepre" id="slide-30" style="background:;">
-  <hgroup>
-    <h2>Discovery pattern</h2>
-  </hgroup>
-  <article data-timings="">
-    <p>九大行星半徑(R)與週期(T)關係圖</p>
-
-<p><img class=center src=figure/kepler.png height=150></p>
-
-<p><img class=center src=figure/kepler_formula.png height=100></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-31" style="background:;">
-  <hgroup>
     <h2>Correlation Coefficient</h2>
   </hgroup>
   <article data-timings="">
@@ -638,6 +577,84 @@ c(cor(x,y),cor(log10(x),log10(y)))
   <!-- Presenter Notes -->
 </slide>
 
+<slide class="" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>what do you see ?</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><a href="http://en.wikipedia.org/wiki/Anscombe&#x27;s_quartet">http://en.wikipedia.org/wiki/Anscombe&#39;s_quartet</a></li>
+</ul>
+
+<div style='float:left;width:48%;' class='centered'>
+  <ul class = "build incremental">
+<li><img class=center src=figure/Anscombe's_quartet_data.png style="width: 850px;"></li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <ul class = "build incremental">
+<li><img class=center src=figure/Anscombe's_quartet_stat_masked.png style="width: 900px;"></li>
+</ul>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>Be careful to use numeber</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img class=center src=figure/Anscombe's_quartet.png style="width: 750px;"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>first step : Scatter plot</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(1,2))
+plot(dat1$面積,dat1$房價/10^4,xlab=&quot;面積(坪)&quot;,ylab=&quot;房價(萬元)&quot;)
+plot(dat1$面積,dat1$房價/10^4,xlab=&quot;log面積(坪)&quot;,ylab=&quot;log房價(萬元)&quot;,log=&quot;xy&quot;)
+</code></pre>
+
+<div class="rimage center"><img src="figure/unnamed-chunk-25.png" title="plot of chunk unnamed-chunk-25" alt="plot of chunk unnamed-chunk-25" class="plot" /></div>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>Discovery pattern</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>九大行星半徑(R,million_km)與週期(T,day)關係圖</li>
+</ul>
+
+<div style='float:left;width:48%;' class='centered'>
+  <p><img class=center src=figure/kepler.png height=90></p>
+
+</div>
+<div style='float:right;width:48%;'>
+  <div class="rimage center"><img src="figure/unnamed-chunk-26.png" title="plot of chunk unnamed-chunk-26" alt="plot of chunk unnamed-chunk-26" class="plot" /></div>
+
+</div>
+<div>
+  <p><img class=center src=figure/kepler_formula.png height=100></p>
+
+</div>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
 <slide class="" id="slide-32" style="background:;">
   <hgroup>
     <h2>Simple regression</h2>
@@ -648,7 +665,7 @@ fit &lt;- lm(log10(y)~log10(x))
 abline(fit,col=2,lwd=2)
 </code></pre>
 
-<div class="rimage center"><img src="figure/unnamed-chunk-26.png" title="plot of chunk unnamed-chunk-26" alt="plot of chunk unnamed-chunk-26" class="plot" /></div>
+<div class="rimage center"><img src="figure/unnamed-chunk-27.png" title="plot of chunk unnamed-chunk-27" alt="plot of chunk unnamed-chunk-27" class="plot" /></div>
 
   </article>
   <!-- Presenter Notes -->
@@ -656,7 +673,7 @@ abline(fit,col=2,lwd=2)
 
 <slide class="" id="slide-33" style="background:;">
   <article data-timings="">
-    <pre><code class="r">summary(fit)
+    <pre><code class="r">summary(fit) #all data simple regression: log10(房價) ~ log10(面積)
 </code></pre>
 
 <pre><code>
@@ -714,7 +731,7 @@ abline(fit,col=2)
 legend(&quot;topleft&quot;,legend=round(summary(fit)$r.squared,4),title=&quot;r.squared&quot;)
 </code></pre>
 
-<div class="rimage center"><img src="figure/unnamed-chunk-29.png" title="plot of chunk unnamed-chunk-29" alt="plot of chunk unnamed-chunk-29" class="plot" /></div>
+<div class="rimage center"><img src="figure/unnamed-chunk-30.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" class="plot" /></div>
 
   </article>
   <!-- Presenter Notes -->
@@ -750,7 +767,7 @@ names(dat4) &lt;- c(&quot;zone&quot;,&quot;admin&quot;,&quot;type&quot;,&quot;pr
 qplot(area,price,data=dat4,log=&quot;xy&quot;) + geom_smooth(method=&quot;lm&quot;) + facet_grid(parking ~ maintance)
 </code></pre>
 
-<div class="rimage center"><img src="figure/unnamed-chunk-30.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" class="plot" /></div>
+<div class="rimage center"><img src="figure/unnamed-chunk-31.png" title="plot of chunk unnamed-chunk-31" alt="plot of chunk unnamed-chunk-31" class="plot" /></div>
 
   </article>
   <!-- Presenter Notes -->
@@ -1095,7 +1112,7 @@ data.frame(&quot;model.taiwan.1&quot;=summary(m11)$r.sq, &quot;model.taiwan.all&
 
 <slide class="" id="slide-42" style="background:;">
   <article data-timings="">
-    <pre><code class="r">summary(m21)
+    <pre><code class="r">summary(m21) #台北市資料 multiple regression: log10(房價) ~ log10(面積) + 屋齡 + 型態 + 車位 + 管理
 </code></pre>
 
 <pre><code>
@@ -1132,7 +1149,7 @@ F-statistic:  199 on 8 and 542 DF,  p-value: &lt;2e-16
 
 <slide class="" id="slide-43" style="background:;">
   <article data-timings="">
-    <pre><code class="r">summary(m22)
+    <pre><code class="r">summary(m22) #台北市資料 multiple regression: log10(房價) ~ log10(面積) + 屋齡 + 型態 + 車位 + 管理 + 行政區
 </code></pre>
 
 <pre><code>
@@ -1183,24 +1200,22 @@ F-statistic:  115 on 19 and 531 DF,  p-value: &lt;2e-16
     <pre><code class="r">forecast &lt;- dat1[1:5, c(1,2,3,5,6,7,8)];rownames(forecast) &lt;- 1:5
 forecast$面積 &lt;- c(30,30,8,40,40)
 forecast$行政區 &lt;- c(&quot;萬華區&quot;,&quot;大安區&quot;,&quot;信義區&quot;,&quot;中山區&quot;,&quot;南港區&quot;)
-forecast$行政區 &lt;- paste(&quot;臺北市&quot;,forecast$行政區,sep=&quot;&quot;)
-forecast$屋齡 &lt;- c(30,6,6,8,8)
+forecast$行政區 &lt;- paste(&quot;臺北市&quot;,forecast$行政區,sep=&quot;&quot;)3forecast$屋齡 &lt;- c(30,6,6,8,8)
 forecast$車位 &lt;- c(&quot;無車位&quot;,&quot;有車位&quot;,&quot;無車位&quot;,&quot;有車位&quot;,&quot;有車位&quot;)
 forecast$管理 &lt;- c(&quot;無管理&quot;,&quot;有管理&quot;,&quot;無管理&quot;,&quot;有管理&quot;,&quot;有管理&quot;)
 forecast$型態 &lt;- c(&quot;公寓&quot;,&quot;大樓&quot;,&quot;套房&quot;,&quot;大樓&quot;,&quot;透天&quot;)
 # prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
 tmp &lt;- predict(m12, newdata=forecast, se.fit=TRUE)
 pred &lt;- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
-data.frame(&quot;建案坪數&quot;=forecast$面積, &quot;建物型態&quot;=forecast$型態, 
-           &quot;總價估計.萬元&quot;=round(pred[,1]/10000),&quot;單價估計.萬元&quot;=round(pred[,1]/10000/forecast$面積))
+data.frame(&quot;行政區&quot;=forecast$行政區,&quot;屋齡&quot;=forecast$屋齡,&quot;車位&quot;=forecast$車位,&quot;管理&quot;=forecast$管理,&quot;建案坪數&quot;=forecast$面積, &quot;建物型態&quot;=forecast$型態, &quot;總價估計.萬元&quot;=round(pred[,1]/10000),&quot;單價估計.萬元&quot;=round(pred[,1]/10000/forecast$面積))
 </code></pre>
 
-<pre><code>  建案坪數 建物型態 總價估計.萬元 單價估計.萬元
-1       30     公寓          1136            38
-2       30     大樓          3571           119
-3        8     套房           601            75
-4       40     大樓          3095            77
-5       40     透天          4360           109
+<pre><code>        行政區 屋齡   車位   管理 建案坪數 建物型態 總價估計.萬元 單價估計.萬元
+1 臺北市萬華區   30 無車位 無管理       30     公寓          1136            38
+2 臺北市大安區    6 有車位 有管理       30     大樓          3571           119
+3 臺北市信義區    6 無車位 無管理        8     套房           601            75
+4 臺北市中山區    8 有車位 有管理       40     大樓          3095            77
+5 臺北市南港區    8 有車位 有管理       40     透天          4360           109
 </code></pre>
 
   </article>
@@ -1276,20 +1291,22 @@ data.frame(&quot;建案坪數&quot;=forecast$面積, &quot;建物型態&quot;=fo
 
 <slide class="" id="slide-48" style="background:;">
   <hgroup>
-    <h2>GAM model</h2>
+    <h2>GAM model : 高價位房型</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
+datHP &lt;- dat1[dat1$房價&gt;60*10^6,]
 # fit linear model
-m31 &lt;- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=dat1)
+m31 &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=datHP)
+m32 &lt;- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=datHP)
 # fit addiive model with two smooth terms
-m32 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=dat1)
+m33 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=datHP)
 # Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame(&quot;linear model&quot;=summary(m31)$adj.r.sq,&quot;additive model&quot;=summary(m32)$r.sq)
+data.frame(&quot;linear model_1&quot;=summary(m31)$adj.r.sq,&quot;linear model_2&quot;=summary(m32)$adj.r.sq,&quot;additive model&quot;=summary(m33)$r.sq)
 </code></pre>
 
-<pre><code>  linear.model additive.model
-1        0.862           0.87
+<pre><code>  linear.model_1 linear.model_2 additive.model
+1          0.652          0.657          0.777
 </code></pre>
 
   </article>
@@ -1302,14 +1319,14 @@ data.frame(&quot;linear model&quot;=summary(m31)$adj.r.sq,&quot;additive model&q
   </hgroup>
   <article data-timings="">
     <pre><code class="r">par(cex=1.2, mfrow=c(1,2))
-plot(m32, select=1, lwd=2) 
-abline(h=m31$coefficients[[&quot;log10(面積)&quot;]], lwd=2, col=2)
-legend(&quot;topleft&quot;, c(&quot;Smooth term&quot;, &quot;Linear term&quot;), col=1:2, lty=1, lwd=2, bty=&quot;n&quot;)
-plot(m32, select=2, lwd=2)
-abline(h=m31$coefficients[[&quot;屋齡&quot;]], lwd=2, col=2)
+plot(m33, select=1, lwd=2,ylim=c(-0.4,0.6)) 
+abline(h=m32$coefficients[[&quot;log10(面積)&quot;]], lwd=2, col=2)
+legend(&quot;bottomright&quot;, c(&quot;Smooth term&quot;, &quot;Linear term&quot;), col=1:2, lty=1, lwd=2, bty=&quot;n&quot;)
+plot(m33, select=2, lwd=2)
+abline(h=m32$coefficients[[&quot;屋齡&quot;]], lwd=2, col=2)
 </code></pre>
 
-<div class="rimage center"><img src="figure/unnamed-chunk-41.png" title="plot of chunk unnamed-chunk-41" alt="plot of chunk unnamed-chunk-41" class="plot" /></div>
+<div class="rimage center"><img src="figure/unnamed-chunk-42.png" title="plot of chunk unnamed-chunk-42" alt="plot of chunk unnamed-chunk-42" class="plot" /></div>
 
   </article>
   <!-- Presenter Notes -->
@@ -1317,20 +1334,33 @@ abline(h=m31$coefficients[[&quot;屋齡&quot;]], lwd=2, col=2)
 
 <slide class="" id="slide-50" style="background:;">
   <hgroup>
-    <h2>Compare Multiple regression and GAM model Answer</h2>
+    <h2>Prediction</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
-# fit linear model
-m_new1 &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
-# fit addiive model with two smooth terms
-m_new2 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
-# Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame(&quot;linear model&quot;=summary(m_new1)$adj.r.sq, &quot;additive model&quot;=summary(m_new2)$r.sq)
+    <pre><code class="r">library(caret)
+set.seed(20140831)
+inTrain1 &lt;- createDataPartition(y=datHP$縣市, p=0.7, list=FALSE)
+training1 &lt;- datHP[inTrain1,]
+testing1 &lt;- datHP[-inTrain1,]
+testing1
 </code></pre>
 
-<pre><code>  linear.model additive.model
-1        0.832           0.87
+<pre><code>            行政區   縣市 型態     房價  面積 屋齡   車位   管理
+132   臺北市大安區 臺北市 大樓 79000000  67.5   25 無車位 有管理
+213   臺北市中正區 臺北市 大樓 70000000  64.5    3 有車位 有管理
+817   臺北市大安區 臺北市 大樓 74000000  62.1   24 無車位 無管理
+1135  臺北市中山區 臺北市 大樓 71700000  76.1    2 有車位 有管理
+1306  臺北市南港區 臺北市 大樓 78900000  87.7    0 有車位 有管理
+1307  臺北市南港區 臺北市 大樓 78000000  86.8    0 有車位 有管理
+1312  臺北市南港區 臺北市 大樓 62500000  71.9    0 有車位 有管理
+1321  臺北市南港區 臺北市 大樓 65600000  86.8    0 有車位 有管理
+1326  臺北市南港區 臺北市 大樓 62500000  86.8    0 有車位 有管理
+1328  臺北市南港區 臺北市 大樓 82000000  86.4    0 有車位 有管理
+1349  臺北市南港區 臺北市 大樓 60200000  73.4    0 有車位 有管理
+1350  臺北市南港區 臺北市 大樓 60500000  86.4    0 有車位 有管理
+1359  臺北市南港區 臺北市 大樓 78000000  88.6    0 有車位 有管理
+7388  新北市新店區 新北市 大樓 72000000 131.7   12 有車位 有管理
+11163 桃園縣桃園市 桃園縣 大樓 78400000 160.0    1 有車位 有管理
 </code></pre>
 
   </article>
@@ -1339,20 +1369,27 @@ data.frame(&quot;linear model&quot;=summary(m_new1)$adj.r.sq, &quot;additive mod
 
 <slide class="" id="slide-51" style="background:;">
   <hgroup>
-    <h2>It&#39;s your turn 7+1</h2>
+    <h2>It&#39;s your turn 7+1 prediction</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
-# fit linear model
-m_new1 &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
-# fit addiive model with two smooth terms
-m_new2 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
-# Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame(&quot;linear model&quot;=summary(m_new1)$adj.r.sq, &quot;additive model&quot;=summary(m_new2)$r.sq)
+    <pre><code class="r">library(caret)
+set.seed(20140831)
+inTrain1 &lt;- createDataPartition(y=datHP$縣市, p=0.7, list=FALSE)
+training1 &lt;- datHP[inTrain1,]
+testing1 &lt;- datHP[-inTrain1,]
+# model_list
+m31 &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=datHP)
+m32 &lt;- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=datHP)
+m33 &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=datHP)
+
+
+# change some argument for prediction
+tmp &lt;- predict(model, newdata=forecast, se.fit=TRUE)
+pred &lt;- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
 </code></pre>
 
 <ul>
-<li>試比較臺北市lm與gam模型，參數同上</li>
+<li>試著練習做出pred_m31,pred_m32,pred_m33的預測值</li>
 </ul>
 
   </article>
@@ -1361,27 +1398,60 @@ data.frame(&quot;linear model&quot;=summary(m_new1)$adj.r.sq, &quot;additive mod
 
 <slide class="" id="slide-52" style="background:;">
   <hgroup>
-    <h2>Multiple regression &amp; GAM (Ans7+1)</h2>
+    <h2>Prediction (Ans7+1)</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">library(mgcv) # provides functions for generalized additive modelling
-# fit linear model
-m_new1_taip &lt;- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=dat3)
-# fit addiive model with two smooth terms
-m_new2_taip &lt;- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=dat3)
-# Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame(&quot;linear model&quot;=summary(m_new1_taip)$adj.r.sq, &quot;additive model&quot;=summary(m_new2_taip)$r.sq)
+    <pre><code class="r">tmp_m31 &lt;- predict(m31, newdata=testing1, se.fit=TRUE)
+tmp_m32 &lt;- predict(m32, newdata=testing1, se.fit=TRUE)
+tmp_m33 &lt;- predict(m33, newdata=testing1, se.fit=TRUE)
+pred_m31 &lt;- 10^cbind(tmp_m31$fit, tmp_m31$fit-tmp_m31$se.fit, tmp_m31$fit+tmp_m31$se.fit)
+pred_m32 &lt;- 10^cbind(tmp_m32$fit, tmp_m32$fit-tmp_m32$se.fit, tmp_m32$fit+tmp_m32$se.fit)
+pred_m33 &lt;- 10^cbind(tmp_m33$fit, tmp_m33$fit-tmp_m33$se.fit, tmp_m33$fit+tmp_m33$se.fit)
+cbind(pred_m31[,1],pred_m32[,1],pred_m33[,1])
 </code></pre>
 
-<pre><code>  linear.model additive.model
-1        0.763           0.81
+<pre><code>          [,1]     [,2]     [,3]
+132   91956975 93026330 81075844
+213   70000000 70000000 70000000
+817   89349335 89228332 76041527
+1135  75751059 74969166 75997571
+1306  71007405 71150727 71759941
+1307  70603789 70745306 71197358
+1312  64049523 63520093 61735403
+1321  70603789 70745306 71197358
+1326  70603789 70745306 71197358
+1328  70414998 70554267 70933056
+1349  64704194 64302719 62692977
+1350  70414998 70554267 70933056
+1359  71455212 71595836 72380161
+7388  72000000 72000000 72000000
+11163 75099523 77345782 77081619
 </code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue dark" id="slide-53" style="background:;">
+<slide class="" id="slide-53" style="background:;">
+  <hgroup>
+    <h2>Evaluation</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># prediction
+RMSE_fun &lt;- function (pred_y,obs_y)   sqrt(sum((pred_y-obs_y)^2)/length(pred_y))
+pred_M = cbind(pred_m31[,1],pred_m32[,1],pred_m33[,1])
+RMSE = apply(pred_M,2,RMSE_fun,obs_y=testing1[,4])
+RMSE
+</code></pre>
+
+<pre><code>[1] 7901638 7910159 5788627
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue dark" id="slide-54" style="background:;">
   <hgroup>
     <h2>Data Mining: Dicision Tree</h2>
   </hgroup>
@@ -1391,7 +1461,7 @@ data.frame(&quot;linear model&quot;=summary(m_new1_taip)$adj.r.sq, &quot;additiv
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-54" style="background:;">
+<slide class="" id="slide-55" style="background:;">
   <article data-timings="">
     <p><img src="figure/Dicision_Tree_Work.png" alt="alt text"></p>
 
@@ -1399,7 +1469,7 @@ data.frame(&quot;linear model&quot;=summary(m_new1_taip)$adj.r.sq, &quot;additiv
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-55" style="background:;">
+<slide class="" id="slide-56" style="background:;">
   <hgroup>
     <h2>Dicision Tree</h2>
   </hgroup>
@@ -1411,13 +1481,13 @@ library(rpart.plot)
 prp(fit,extra=1,col=2,box.col=&quot;lightgray&quot;,shadow.col=&quot;gray&quot;)
 </code></pre>
 
-<div class="rimage center"><img src="figure/unnamed-chunk-45.png" title="plot of chunk unnamed-chunk-45" alt="plot of chunk unnamed-chunk-45" class="plot" /></div>
+<div class="rimage center"><img src="figure/unnamed-chunk-47.png" title="plot of chunk unnamed-chunk-47" alt="plot of chunk unnamed-chunk-47" class="plot" /></div>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-56" style="background:;">
+<slide class="" id="slide-57" style="background:;">
   <hgroup>
     <h2>It&#39;s your turn 8</h2>
   </hgroup>
@@ -1437,7 +1507,7 @@ prp(fit,extra=1)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-57" style="background:;">
+<slide class="" id="slide-58" style="background:;">
   <hgroup>
     <h2>Dicision Tree (Ans8)</h2>
   </hgroup>
@@ -1447,13 +1517,13 @@ fit2 &lt;- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
 prp(fit2,extra=1,col=2,box.col=&quot;lightgray&quot;,shadow.col=&quot;gray&quot;)
 </code></pre>
 
-<div class="rimage center"><img src="figure/unnamed-chunk-47.png" title="plot of chunk unnamed-chunk-47" alt="plot of chunk unnamed-chunk-47" class="plot" /></div>
+<div class="rimage center"><img src="figure/unnamed-chunk-49.png" title="plot of chunk unnamed-chunk-49" alt="plot of chunk unnamed-chunk-49" class="plot" /></div>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue dark" id="slide-58" style="background:;">
+<slide class="segue dark" id="slide-59" style="background:;">
   <hgroup>
     <h2>Extension</h2>
   </hgroup>
@@ -1463,21 +1533,35 @@ prp(fit2,extra=1,col=2,box.col=&quot;lightgray&quot;,shadow.col=&quot;gray&quot;
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-59" style="background:;">
+<slide class="" id="slide-60" style="background:;">
   <hgroup>
-    <h2>Random Forest</h2>
+    <h2>Bootstrap sampling</h2>
   </hgroup>
   <article data-timings="">
     <ul>
-<li><a href="http://jamie.shotton.org/work/presentations/ICCV2009TutorialPartI.pptx">http://jamie.shotton.org/work/presentations/ICCV2009TutorialPartI.pptx</a>
-<img class=center src=figure/random_forest.png style="width: 800px;"></li>
+<li>resampling: draw with replacement
+<img class=center src=figure/Accuracy_and_Precision.png style="width: 800px;"></li>
 </ul>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-60" style="background:;">
+<slide class="" id="slide-61" style="background:;">
+  <hgroup>
+    <h2>Random Forest</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><a href="http://jamie.shotton.org/work/presentations/ICCV2009TutorialPartI.pptx">http://jamie.shotton.org/work/presentations/ICCV2009TutorialPartI.pptx</a>
+<img class=center src=figure/random_forest.png style="width: 600px;"></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-62" style="background:;">
   <article data-timings="">
     <pre><code class="r">library(caret)
 dat4 &lt;- dat1[dat1$縣市 %in% c(&quot;臺北市&quot;,&quot;臺中市&quot;,&quot;高雄市&quot;) ,]
@@ -1500,7 +1584,7 @@ table(predict(modFit2,newdata=testing2,type=&quot;raw&quot;),testing2$縣市)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-61" style="background:;">
+<slide class="" id="slide-63" style="background:;">
   <hgroup>
     <h2>It&#39;s your turn 8+1 for homework</h2>
   </hgroup>
@@ -1526,7 +1610,7 @@ table(predict(modFit2,newdata=testing2,type=&quot;raw&quot;),testing2$縣市)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-62" style="background:;">
+<slide class="" id="slide-64" style="background:;">
   <hgroup>
     <h2>Random Forest (Ans8+1)</h2>
   </hgroup>
@@ -1552,7 +1636,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue dark" id="slide-63" style="background:;">
+<slide class="segue dark" id="slide-65" style="background:;">
   <hgroup>
     <h2>Future</h2>
   </hgroup>
@@ -1562,7 +1646,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-64" style="background:;">
+<slide class="" id="slide-66" style="background:;">
   <article data-timings="">
     <p><img class=center src=figure/data_scientist.png style="width: 800px;"></p>
 
@@ -1570,7 +1654,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-65" style="background:;">
+<slide class="" id="slide-67" style="background:;">
   <hgroup>
     <h2>Advanced Course</h2>
   </hgroup>
@@ -1604,7 +1688,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-66" style="background:;">
+<slide class="" id="slide-68" style="background:;">
   <hgroup>
     <h2>Reference</h2>
   </hgroup>
@@ -1783,31 +1867,31 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=27 title='what do you see ?'>
+        data-slide=27 title='Correlation Coefficient'>
          27
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=28 title='Be careful to use numeber'>
+        data-slide=28 title='what do you see ?'>
          28
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=29 title='first step : Scatter plot'>
+        data-slide=29 title='Be careful to use numeber'>
          29
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=30 title='Discovery pattern'>
+        data-slide=30 title='first step : Scatter plot'>
          30
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=31 title='Correlation Coefficient'>
+        data-slide=31 title='Discovery pattern'>
          31
       </a>
     </li>
@@ -1909,7 +1993,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=48 title='GAM model'>
+        data-slide=48 title='GAM model : 高價位房型'>
          48
       </a>
     </li>
@@ -1921,104 +2005,116 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=50 title='Compare Multiple regression and GAM model Answer'>
+        data-slide=50 title='Prediction'>
          50
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=51 title='It&#39;s your turn 7+1'>
+        data-slide=51 title='It&#39;s your turn 7+1 prediction'>
          51
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=52 title='Multiple regression &amp; GAM (Ans7+1)'>
+        data-slide=52 title='Prediction (Ans7+1)'>
          52
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=53 title='Data Mining: Dicision Tree'>
+        data-slide=53 title='Evaluation'>
          53
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=54 title=''>
+        data-slide=54 title='Data Mining: Dicision Tree'>
          54
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=55 title='Dicision Tree'>
+        data-slide=55 title=''>
          55
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=56 title='It&#39;s your turn 8'>
+        data-slide=56 title='Dicision Tree'>
          56
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=57 title='Dicision Tree (Ans8)'>
+        data-slide=57 title='It&#39;s your turn 8'>
          57
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=58 title='Extension'>
+        data-slide=58 title='Dicision Tree (Ans8)'>
          58
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=59 title='Random Forest'>
+        data-slide=59 title='Extension'>
          59
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=60 title=''>
+        data-slide=60 title='Bootstrap sampling'>
          60
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=61 title='It&#39;s your turn 8+1 for homework'>
+        data-slide=61 title='Random Forest'>
          61
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=62 title='Random Forest (Ans8+1)'>
+        data-slide=62 title=''>
          62
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=63 title='Future'>
+        data-slide=63 title='It&#39;s your turn 8+1 for homework'>
          63
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=64 title=''>
+        data-slide=64 title='Random Forest (Ans8+1)'>
          64
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=65 title='Advanced Course'>
+        data-slide=65 title='Future'>
          65
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=66 title='Reference'>
+        data-slide=66 title=''>
          66
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=67 title='Advanced Course'>
+         67
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=68 title='Reference'>
+         68
       </a>
     </li>
   </ul>
@@ -2050,12 +2146,25 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   </script> -->
   <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
 </script>
-<script>  
+<div class='row'>
+    <div class='span6'>
+  
+    </div>
+    <div class='span6'>
+  
+    </div>
+  </div>
+  <div class='span12'>
+  
+  </div>
+  
+  <script>  
   $(function (){ 
     $("#example").popover(); 
     $("[rel='tooltip']").tooltip(); 
   });  
   </script>  
+  
   <!-- LOAD HIGHLIGHTER JS FILES -->
   <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>

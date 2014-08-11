@@ -52,7 +52,8 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ---
 ## Data Appearance
-```{r }
+```{r cache=TRUE}
+library('DSC2014Tutorial')
 dat1 <- readRDS(DA_file("estate_linux.rds"))
 nrow(dat1)
 # random sampling
@@ -99,7 +100,9 @@ dcast(dat1,型態 ~ ., fun.aggregate=mean,value.var="房價")
 ---
 ```{r cache=TRUE}
 # Pivot table (Ans1)
-cast(dat1,縣市~.,fun.aggregate=table,value="型態")
+library(reshape)
+cast(data=dat1,formula=縣市 ~ ., fun.aggregate=table,value="型態")
+#dcast(data=dat1,formula=縣市 ~ ., fun.aggregate=table,value.var="型態")
 ```
 
 ---
@@ -258,6 +261,22 @@ boxplot(log10(房價)~縣市,data=subset(dat2,型態=="套房"),las=2,ylab="log1
 ## Modeling method: Regression
 
 --- &twocol
+## Correlation Coefficient
+
+*** =left
+```{r}
+x <- dat1$面積
+y <- dat1$房價/10^4
+c(cor(x,y),cor(log10(x),log10(y)))
+```
+
+*** =right
+  - Correlation coefficient by wiki
+  
+  ![alt text](figure/correlation_formula.png)
+
+
+--- &twocol
 ## what do you see ?
 - http://en.wikipedia.org/wiki/Anscombe's_quartet
 
@@ -280,28 +299,24 @@ plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
 plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
 ```
 
---- .centrepre
+--- &twocolfull
 ## Discovery pattern
+- 九大行星半徑(R,million_km)與週期(T,day)關係圖
 
-九大行星半徑(R)與週期(T)關係圖
+*** =left 
+  <img class=center src=figure/kepler.png height=90>
 
-<img class=center src=figure/kepler.png height=150>
+*** =right 
+```{r  echo=FALSE, fig.width=9, fig.height=5}
+T=c(88,225,365,687,4339,10761,30690,60185,90782)
+R=c(58,108,150,228,778,1427,2875,4505,5914)
+plot(T,R,log='xy',type='l')
+```
+
+*** =fullwidth
 
 <img class=center src=figure/kepler_formula.png height=100>
 
---- &twocol
-## Correlation Coefficient
-*** =left
-```{r}
-x <- dat1$面積
-y <- dat1$房價/10^4
-c(cor(x,y),cor(log10(x),log10(y)))
-```
-
-*** =right
-  - Correlation coefficient by wiki
-  
-  ![alt text](figure/correlation_formula.png)
 
 ---
 ## Simple regression
@@ -314,7 +329,7 @@ abline(fit,col=2,lwd=2)
 
 ---
 ```{r warning=FALSE}
-summary(fit)
+summary(fit) #all data simple regression: log10(房價) ~ log10(面積)
 ```
 
 ---
@@ -394,12 +409,12 @@ data.frame("model.taiwan.1"=summary(m11)$r.sq, "model.taiwan.all"=summary(m12)$r
 
 ---
 ```{r  fig.width=12, fig.height=3, warning=FALSE}
-summary(m21)
+summary(m21) #台北市資料 multiple regression: log10(房價) ~ log10(面積) + 屋齡 + 型態 + 車位 + 管理
 ```
 
 ---
 ```{r  fig.width=12, fig.height=3, warning=FALSE}
-summary(m22)
+summary(m22) #台北市資料 multiple regression: log10(房價) ~ log10(面積) + 屋齡 + 型態 + 車位 + 管理 + 行政區
 ```
 
 ---
@@ -407,16 +422,14 @@ summary(m22)
 forecast <- dat1[1:5, c(1,2,3,5,6,7,8)];rownames(forecast) <- 1:5
 forecast$面積 <- c(30,30,8,40,40)
 forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
-forecast$行政區 <- paste("臺北市",forecast$行政區,sep="")
-forecast$屋齡 <- c(30,6,6,8,8)
+forecast$行政區 <- paste("臺北市",forecast$行政區,sep="");forecast$屋齡 <- c(30,6,6,8,8)
 forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
 forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
 forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
 # prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
 tmp <- predict(m12, newdata=forecast, se.fit=TRUE)
 pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
-data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
-           "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
+data.frame("行政區"=forecast$行政區,"屋齡"=forecast$屋齡,"車位"=forecast$車位,"管理"=forecast$管理,"建案坪數"=forecast$面積, "建物型態"=forecast$型態, "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
 ```
 
 ---
@@ -460,66 +473,82 @@ data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態,
 
 
 ---
-## GAM model
+## GAM model : 高價位房型
 ```{r cache=TRUE}
 library(mgcv) # provides functions for generalized additive modelling
+datHP <- dat1[dat1$房價>60*10^6,]
 # fit linear model
-m31 <- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=dat1)
+m31 <- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=datHP)
+m32 <- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=datHP)
 # fit addiive model with two smooth terms
-m32 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=dat1)
+m33 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=datHP)
 # Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame("linear model"=summary(m31)$adj.r.sq,"additive model"=summary(m32)$r.sq)
+data.frame("linear model_1"=summary(m31)$adj.r.sq,"linear model_2"=summary(m32)$adj.r.sq,"additive model"=summary(m33)$r.sq)
 ```
 
 ---
 ## GAM model parameter : smoothing parameter
 ```{r  echo=TRUE, warning=FALSE}
 par(cex=1.2, mfrow=c(1,2))
-plot(m32, select=1, lwd=2) 
-abline(h=m31$coefficients[["log10(面積)"]], lwd=2, col=2)
-legend("topleft", c("Smooth term", "Linear term"), col=1:2, lty=1, lwd=2, bty="n")
-plot(m32, select=2, lwd=2)
-abline(h=m31$coefficients[["屋齡"]], lwd=2, col=2)
+plot(m33, select=1, lwd=2,ylim=c(-0.4,0.6)) 
+abline(h=m32$coefficients[["log10(面積)"]], lwd=2, col=2)
+legend("bottomright", c("Smooth term", "Linear term"), col=1:2, lty=1, lwd=2, bty="n")
+plot(m33, select=2, lwd=2)
+abline(h=m32$coefficients[["屋齡"]], lwd=2, col=2)
 ```
 
 ---
-## Compare Multiple regression and GAM model Answer
-```{r cache=TRUE}
-library(mgcv) # provides functions for generalized additive modelling
-# fit linear model
-m_new1 <- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
-# fit addiive model with two smooth terms
-m_new2 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
-# Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame("linear model"=summary(m_new1)$adj.r.sq, "additive model"=summary(m_new2)$r.sq)
+## Prediction
+```{r}
+library(caret)
+set.seed(20140831)
+inTrain1 <- createDataPartition(y=datHP$縣市, p=0.7, list=FALSE)
+training1 <- datHP[inTrain1,]
+testing1 <- datHP[-inTrain1,]
+testing1
 ```
 
----
-## It's your turn 7+1
+--- 
+## It's your turn 7+1 prediction
 ```{r eval=FALSE}
-library(mgcv) # provides functions for generalized additive modelling
-# fit linear model
-m_new1 <- lm(log10(房價)~面積+車位+屋齡+型態+行政區+縣市, data=dat1)
-# fit addiive model with two smooth terms
-m_new2 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區+縣市, data=dat1)
-# Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame("linear model"=summary(m_new1)$adj.r.sq, "additive model"=summary(m_new2)$r.sq)
+library(caret)
+set.seed(20140831)
+inTrain1 <- createDataPartition(y=datHP$縣市, p=0.7, list=FALSE)
+training1 <- datHP[inTrain1,]
+testing1 <- datHP[-inTrain1,]
+# model_list
+m31 <- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=datHP)
+m32 <- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=datHP)
+m33 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=datHP)
+
+
+# change some argument for prediction
+tmp <- predict(model, newdata=forecast, se.fit=TRUE)
+pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
 ```
-- 試比較臺北市lm與gam模型，參數同上
+- 試著練習做出pred_m31,pred_m32,pred_m33的預測值
 
 ---
-## Multiple regression & GAM (Ans7+1)
-```{r cache=TRUE}
-library(mgcv) # provides functions for generalized additive modelling
-# fit linear model
-m_new1_taip <- lm(log10(房價)~面積+車位+屋齡+型態+行政區, data=dat3)
-# fit addiive model with two smooth terms
-m_new2_taip <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=dat3)
-# Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame("linear model"=summary(m_new1_taip)$adj.r.sq, "additive model"=summary(m_new2_taip)$r.sq)
+## Prediction (Ans7+1)
+```{r}
+tmp_m31 <- predict(m31, newdata=testing1, se.fit=TRUE)
+tmp_m32 <- predict(m32, newdata=testing1, se.fit=TRUE)
+tmp_m33 <- predict(m33, newdata=testing1, se.fit=TRUE)
+pred_m31 <- 10^cbind(tmp_m31$fit, tmp_m31$fit-tmp_m31$se.fit, tmp_m31$fit+tmp_m31$se.fit)
+pred_m32 <- 10^cbind(tmp_m32$fit, tmp_m32$fit-tmp_m32$se.fit, tmp_m32$fit+tmp_m32$se.fit)
+pred_m33 <- 10^cbind(tmp_m33$fit, tmp_m33$fit-tmp_m33$se.fit, tmp_m33$fit+tmp_m33$se.fit)
+cbind(pred_m31[,1],pred_m32[,1],pred_m33[,1])
 ```
 
-
+---
+## Evaluation
+```{r}
+# prediction
+RMSE_fun <- function (pred_y,obs_y)   sqrt(sum((pred_y-obs_y)^2)/length(pred_y))
+pred_M = cbind(pred_m31[,1],pred_m32[,1],pred_m33[,1])
+RMSE = apply(pred_M,2,RMSE_fun,obs_y=testing1[,4])
+RMSE
+```
 
 --- .segue .dark 
 ## Data Mining: Dicision Tree
@@ -560,9 +589,15 @@ prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 ## Extension
 
 ---
+## Bootstrap sampling
+
+- resampling: draw with replacement
+<img class=center src=figure/Accuracy_and_Precision.png style="width: 800px;">
+
+---
 ## Random Forest
 - http://jamie.shotton.org/work/presentations/ICCV2009TutorialPartI.pptx
-<img class=center src=figure/random_forest.png style="width: 800px;">
+<img class=center src=figure/random_forest.png style="width: 600px;">
 
 ---
 ```{r eval=FALSE}
