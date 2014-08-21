@@ -57,12 +57,12 @@ library('DSC2014Tutorial')
 dat1 <- readRDS(DA_file("estate_linux.rds"))
 nrow(dat1)
 # random sampling
-head(dat1[sample(1:nrow(dat1),6),])
+dat1[sample(1:nrow(dat1),6),]
 ```
 
 ---
 ```{r}
-head(dat1[sample(1:nrow(dat1),18),],18)
+dat1[sample(1:nrow(dat1),18),]
 ```
 
 ---
