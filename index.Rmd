@@ -11,7 +11,6 @@ mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 logo        : Taiwan-R-logo.png
 --- .segue .dark 
-
 ## Purpose 
 ```{r setup, include=FALSE,echo = F, message = F, warning = F, tidy = F}
 # make this an external chunk that can be included in any file
@@ -54,7 +53,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ## Data Appearance
 ```{r cache=TRUE}
 library('DSC2014Tutorial')
-dat1 <- readRDS(DA_file("estate_linux.rds"))
+dat1 <- readRDS(DA_file("estate.rds"))
 nrow(dat1)
 # random sampling
 dat1[sample(1:nrow(dat1),6),]
@@ -83,31 +82,40 @@ sort(table(dat1[,1]),decreasing = TRUE)[1:5]
 - $y \sim x$
 ```{r}
 # pivotal table
-library(reshape2);
-dcast(data=dat1,formula=型態 ~ ., fun.aggregate=mean,value.var="房價")
+library(dplyr)
+summarize(group_by(dat1, 型態), 平均=mean(房價))
 ```
 
 ---
 ## It's your turn 1
 - 試練習各縣市在不同型態的房屋數量，如何操作?
 ```{r eval=FALSE}
-library(reshape2)
-dcast(dat1,型態 ~ ., fun.aggregate=mean,value.var="房價")
+summarize(group_by(dat1, 型態), 平均=mean(房價))
 ```
 
-> - Hint: cast + table
+> - Hint1: summarise(group_by(dat1, 縣市), 公寓=sum(型態=="公寓")
+> - Hint2: 利用data.frame把 公寓、大樓、套房、華廈、透天 等結果合併
 
 ---
 ```{r cache=TRUE}
 # Pivot table (Ans1)
-library(reshape)
-cast(data=dat1,formula=縣市 ~ ., fun.aggregate=table,value="型態")
-#dcast(data=dat1,formula=縣市 ~ ., fun.aggregate=table,value.var="型態")
+data.frame(縣市=summarise(group_by(dat1, 縣市), 公寓=sum(型態=="公寓"))[,1],
+           公寓=summarise(group_by(dat1, 縣市), 公寓=sum(型態=="公寓"))[,2],
+           大樓=summarise(group_by(dat1, 縣市), 大樓=sum(型態=="大樓"))[,2],
+           套房=summarise(group_by(dat1, 縣市), 大樓=sum(型態=="套房"))[,2],
+           華廈=summarise(group_by(dat1, 縣市), 大樓=sum(型態=="華廈"))[,2],
+           透天=summarise(group_by(dat1, 縣市), 大樓=sum(型態=="透天"))[,2])
 ```
 
 ---
 ## Graphic is more intutive
-```{r  warning=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
+```{r eval=FALSE}
+# par(family="STHeiti") # 顯示中文字體 Mac user only
+barplot(sort(table(dat1$縣市),decreasing=TRUE)[1:10],las=1,horiz=TRUE)
+pie(sort(table(dat1$型態),decreasing=TRUE))
+```
+
+```{r  echo=FALSE, warning=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
 par(mfrow=c(1,2))
 barplot(sort(table(dat1$縣市),decreasing=TRUE)[1:10],las=1,horiz=TRUE)
 pie(sort(table(dat1$型態),decreasing=TRUE))
@@ -116,7 +124,6 @@ pie(sort(table(dat1$型態),decreasing=TRUE))
 ---
 ## It's your turn 2
 ```{r eval=FALSE}
-par(mfrow=c(1,2))
 barplot(sort(table(dat1$縣市),decreasing=TRUE)[1:10],las=1,horiz=TRUE)
 pie(sort(table(dat1$型態),decreasing=TRUE))
 ```
@@ -124,8 +131,13 @@ pie(sort(table(dat1$型態),decreasing=TRUE))
 - 2. 前五大縣市的pie plot?
 
 ---
-```{r  fig.width=9, fig.height=4.5, warning=FALSE}
 # Barplot & Pie plot (Ans2)
+```{r eval=FALSE}
+barplot(sort(table(dat1$型態),decreasing=TRUE),las=1,horiz=TRUE)
+pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5]) 
+```
+
+```{r  echo=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
 par(mfrow=c(1,2))
 barplot(sort(table(dat1$型態),decreasing=TRUE),las=1,horiz=TRUE)
 pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5]) 
@@ -134,17 +146,40 @@ pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5])
 ---
 ## ggplot (Data Visualization)
 <a class='example'>Visualization</a>
-```{r  fig.width=9, fig.height=3.5, warning=FALSE}
-library(ggplot2);count <- sort(table(dat1$縣市),decreasing=TRUE)[1:10]
+```{r  echo=FALSE, fig.width=10, fig.height=5, warning=FALSE}
+library(ggplot2)
+count <- sort(table(dat1$縣市),decreasing=TRUE)[1:10]
 zone <- factor(names(count),levels=names(count),ordered=TRUE)
 df <- data.frame(count, zone)
-ggplot(data=df, aes(x=zone,y=count,fill=zone)) + 
+g <- ggplot(data=df, aes(x=zone,y=count,fill=zone)) + 
   geom_bar(colour="black",stat="identity") + guides(fill=FALSE)
+g
 ```
 
 ---
+## ggplot (Data Visualization)
+<a class='example'>Visualization</a>
+```{r eval=FALSE}
+library(ggplot2)
+count <- sort(table(dat1$縣市),decreasing=TRUE)[1:10]
+zone <- factor(names(count),levels=names(count),ordered=TRUE)
+df <- data.frame(count, zone)
+g <- ggplot(data=df, aes(x=zone,y=count,fill=zone)) + 
+  geom_bar(colour="black",stat="identity") + guides(fill=FALSE)
+g
+# g + theme_gray(base_family="STHeiti") # 顯示中文字 Mac user only
+```
+
+
+
+---
 ## the shaple of data:Histogram -1
-```{r  fig.width=9, fig.height=3.5}
+```{r eval=FALSE}
+hist(dat1$面積,breaks=5,col="lightblue",prob=TRUE,xlab="面積",main="Historgram")
+hist(dat1$面積,breaks=100,col="lightgreen",prob=TRUE,xlab="面積",main="Historgram")
+```
+
+```{r echo=FALSE, fig.width=9, fig.height=3.5, warning=FALSE}
 par(mfrow=c(1,2))
 hist(dat1$面積,breaks=5,col="lightblue",prob=TRUE,xlab="面積",main="Historgram")
 hist(dat1$面積,breaks=100,col="lightgreen",prob=TRUE,xlab="面積",main="Historgram")
@@ -167,13 +202,18 @@ sig2<-log(3)
 cpct <- 0.4
 
 bimodalData <- bimodalDistFunc(n=10000,cpct,mu1,mu2, sig1,sig2)
-hist(log(bimodalData),breaks=200)
 hist(log(bimodalData),breaks=10)
+hist(log(bimodalData),breaks=200)
 ```
 
 ---
 ## Histogram  -3
-```{r  fig.width=9, fig.height=3.5}
+```{r eval=FALSE}
+hist(dat1$房價/10^6,breaks=20,col="lightyellow",prob=TRUE,xlab="房價(百萬)",main="Historgram")
+hist(dat1$房價/10^6,breaks=200,col="lightgray",prob=TRUE,xlab="房價(百萬)",main="Historgram")
+```
+
+```{r echo=FALSE, fig.width=9, fig.height=3.5}
 par(mfrow=c(1,2))
 hist(dat1$房價/10^6,breaks=20,col="lightyellow",prob=TRUE,xlab="房價(百萬)",main="Historgram")
 hist(dat1$房價/10^6,breaks=200,col="lightgray",prob=TRUE,xlab="房價(百萬)",main="Historgram")
@@ -196,7 +236,12 @@ hist(rep(levels,frequency),main="earthquake scale frequency")
 
 ---
 ## Log transformation for ratio data -2
-```{r  fig.width=9, fig.height=3.5, warning=FALSE}
+```{r eval=FALSE}
+plot(rev(2:8),log10(frequency),type="l",main="earthquake scale frequency take log")
+hist(log10(dat1$面積),breaks=20,col="blue",prob=TRUE,xlab="log10(面積)",main="Historgram")
+```
+
+```{r echo=FALSE, fig.width=9, fig.height=3.5, warning=FALSE}
 par(mfrow=c(1,2))
 plot(rev(2:8),log10(frequency),type="l",main="earthquake scale frequency take log")
 hist(log10(dat1$面積),breaks=20,col="blue",prob=TRUE,xlab="log10(面積)",main="Historgram")
@@ -213,7 +258,12 @@ hist(log10(dat1$面積),breaks=5,col="blue",prob=TRUE,xlab="log10(面積)",main=
 > - HINT: 房價單位百萬，寬度調小
 
 ---
-```{r  fig.width=9, fig.height=4.5, warning=FALSE}
+```{r eval=FALSE}
+hist(dat1$房價/10^6,breaks=100,col="lightpink",prob=TRUE,xlab="房價(百萬)",main="Historgram")
+hist(log10(dat1$房價),breaks=20,col="deeppink",prob=TRUE,xlab="log10(房價)",main="Historgram")
+```
+
+```{r echo=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
 # Histogram (Ans3)
 par(mfrow=c(1,2))
 hist(dat1$房價/10^6,breaks=100,col="lightpink",prob=TRUE,xlab="房價(百萬)",main="Historgram")
@@ -293,13 +343,18 @@ c(cor(x,y),cor(log10(x),log10(y)))
 
 ---
 ## first step : Scatter plot
+```{r eval=FALSE}
+plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
+plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
+```
+
 ```{r  fig.width=9, fig.height=4.5, warning=FALSE}
 par(mfrow=c(1,2))
 plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
 plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
 ```
 
---- &twocolfull
+--- &twocol
 ## Discovery pattern
 - 九大行星半徑(R,million_km)與週期(T,day)關係圖
 
@@ -349,8 +404,9 @@ abline(fit,col=2,lwd=2)
 ```{r  fig.width=9, fig.height=4, warning=FALSE, fig.align = 'center'}
 # Simple regression (Ans5)
 dat3 <- dat1[dat1$縣市=="臺北市",]
-x <- dat3$面積;y <- dat3$房價/10^4
-plot(x,y,log="xy");fit<-lm(log10(y)~log10(x))
+x <- dat3$面積
+y <- dat3$房價/10^4
+plot(x,y,log="xy"); fit<-lm(log10(y)~log10(x))
 abline(fit,col=2)
 legend("topleft",legend=round(summary(fit)$r.squared,4),title="r.squared")
 ```
@@ -373,7 +429,8 @@ legend("topleft",legend=round(summary(fit)$r.squared,4),title="r.squared")
 library(ggplot2)
 dat4 <- dat1
 names(dat4) <- c("zone","admin","type","price","area","age","parking","maintance")
-qplot(area,price,data=dat4,log="xy") + geom_smooth(method="lm") + facet_grid(parking ~ maintance)
+qplot(area,price,data=dat4,log="xy") + geom_smooth(method="lm") + 
+  facet_grid(parking ~ maintance)
 ```
 
 ---
@@ -418,7 +475,9 @@ summary(m22) #台北市資料 multiple regression: log10(房價) ~ log10(面積)
 ```
 
 ---
-```{r  echo=TRUE}
+## Prediction
+設定預測物件格局
+```{r}
 forecast <- dat1[1:5, c(1,2,3,5,6,7,8)];rownames(forecast) <- 1:5
 forecast$面積 <- c(30,30,8,40,40)
 forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
@@ -426,46 +485,40 @@ forecast$行政區 <- paste("臺北市",forecast$行政區,sep="");forecast$屋�
 forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
 forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
 forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
+```
+
+---
+```{r}
 # prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
 tmp <- predict(m12, newdata=forecast, se.fit=TRUE)
 pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
-data.frame("行政區"=forecast$行政區,"屋齡"=forecast$屋齡,"車位"=forecast$車位,"管理"=forecast$管理,"建案坪數"=forecast$面積, "建物型態"=forecast$型態, "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
+data.frame("行政區"=forecast$行政區,"屋齡"=forecast$屋齡,
+           "車位"=forecast$車位,"管理"=forecast$管理,
+           "建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
+           "總價估計.萬元"=round(pred[,1]/10000),
+           "單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
 ```
 
 ---
 ## It's your trun 7
 ```{r eval=FALSE}
-forecast <- dat1[1:5, c(1,2,3,5,6,7,8)];rownames(forecast) <- 1:5
-forecast$面積 <- c(30,30,8,40,40)
-forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
-forecast$行政區 <- paste("臺北市",forecast$行政區,sep="")
-forecast$屋齡 <- c(30,6,6,8,8)
-forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
-forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
-forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
 # prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
 tmp <- predict(m12, newdata=forecast, se.fit=TRUE)
 pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
 data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
-           "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
+           "總價估計.萬元"=round(pred[,1]/10000),
+           "單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
 ```
 - 試練習直接使用臺北市資料所建立之模型，作以上預測。
 
 ---
 ```{r  echo=TRUE}
-forecast <- dat3[1:5, c(1,3,5,6,7,8)];rownames(forecast) <- 1:5
-forecast$面積 <- c(30,30,8,40,40)
-forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
-forecast$行政區 <- paste("臺北市",forecast$行政區,sep="")
-forecast$屋齡 <- c(30,6,6,8,8)
-forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
-forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
-forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
 # prediction
 tmp <- predict(m22, newdata=forecast, se.fit=TRUE)
 pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
 data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
-           "總價估計.萬元"=round(pred[,1]/10000),"單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
+           "總價估計.萬元"=round(pred[,1]/10000),
+           "單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
 ```
 
 --- .segue .dark
@@ -474,7 +527,7 @@ data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態,
 
 ---
 ## GAM model : 高價位房型
-```{r cache=TRUE}
+```{r}
 library(mgcv) # provides functions for generalized additive modelling
 datHP <- dat1[dat1$房價>60*10^6,]
 # fit linear model
@@ -483,12 +536,21 @@ m32 <- lm(log10(房價)~log10(面積)+車位+屋齡+型態+行政區, data=datHP
 # fit addiive model with two smooth terms
 m33 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=datHP)
 # Compare adjusted R-squared, 越趨近1模型配適度越好
-data.frame("linear model_1"=summary(m31)$adj.r.sq,"linear model_2"=summary(m32)$adj.r.sq,"additive model"=summary(m33)$r.sq)
+data.frame("linear model_1"=summary(m31)$adj.r.sq,
+           "linear model_2"=summary(m32)$adj.r.sq,
+           "additive model"=summary(m33)$r.sq)
 ```
 
 ---
 ## GAM model parameter : smoothing parameter
-```{r  echo=TRUE, warning=FALSE}
+```{r eval=FALSE}
+plot(m33, select=1, lwd=2,ylim=c(-0.4,0.6)) 
+abline(h=m32$coefficients[["log10(面積)"]], lwd=2, col=2)
+legend("bottomright", c("Smooth term", "Linear term"), col=1:2, lty=1, lwd=2, bty="n")
+plot(m33, select=2, lwd=2)
+abline(h=m32$coefficients[["屋齡"]], lwd=2, col=2)
+```
+```{r echo=FALSE, warning=FALSE}
 par(cex=1.2, mfrow=c(1,2))
 plot(m33, select=1, lwd=2,ylim=c(-0.4,0.6)) 
 abline(h=m32$coefficients[["log10(面積)"]], lwd=2, col=2)
@@ -500,6 +562,7 @@ abline(h=m32$coefficients[["屋齡"]], lwd=2, col=2)
 ---
 ## Prediction
 ```{r}
+# install.packages("caret") # 請確認安裝此套件時網路順暢！
 library(caret)
 set.seed(20140831)
 inTrain1 <- createDataPartition(y=datHP$縣市, p=0.7, list=FALSE)
@@ -511,7 +574,6 @@ testing1
 --- 
 ## It's your turn 7+1 prediction
 ```{r eval=FALSE}
-library(caret)
 set.seed(20140831)
 inTrain1 <- createDataPartition(y=datHP$縣市, p=0.7, list=FALSE)
 training1 <- datHP[inTrain1,]
@@ -523,7 +585,7 @@ m33 <- gam(log10(房價)~s(面積)+車位+s(屋齡)+型態+行政區, data=datHP
 
 
 # change some argument for prediction
-tmp <- predict(model, newdata=forecast, se.fit=TRUE)
+tmp <- predict(SetYourModel, newdata=forecast, se.fit=TRUE)
 pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
 ```
 - 試著練習做出pred_m31,pred_m32,pred_m33的預測值
@@ -558,7 +620,7 @@ RMSE
 
 ---
 ## Dicision Tree
-```{r cache=TRUE}
+```{r}
 library(rpart)
 dat3$房價百萬 <- dat3$房價/10^6
 fit <- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
@@ -592,7 +654,7 @@ prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 ## Bootstrap sampling
 
 - resampling: draw with replacement
-<img class=center src=figure/Accuracy_and_Precision.png style="width: 800px;">
+<img class=center src=figure/Accuracy_and_Precision.png style="width: 600px;">
 
 ---
 ## Random Forest
@@ -618,7 +680,6 @@ table(predict(modFit2,newdata=testing2,type="raw"),testing2$縣市)
 ---
 ## It's your turn 8+1 for homework
 ```{r eval=FALSE}
-library(caret)
 dat4 <- dat1[dat1$縣市 %in% c("臺北市","臺中市","高雄市") ,]
 dat4$縣市 <- factor(dat4$縣市,levels=c("臺北市","臺中市","高雄市"))
 dat4$房價百萬 <- dat4$房價/10^6
@@ -635,6 +696,9 @@ table(predict(modFit2,newdata=testing2,type="raw"),testing2$縣市)
 --- 
 ## Random Forest (Ans8+1)
 ```{r cache=TRUE}
+# install.packages(c("randomForest","e1071")) # 請確認安裝套件時網路順暢！
+library(randomForest)
+library(e1071)
 set.seed(20140831)
 inTrain <- createDataPartition(y=dat3$型態, p=0.7, list=FALSE)
 training <- dat3[inTrain,]
@@ -642,7 +706,6 @@ testing <- dat3[-inTrain,]
 modFit <- train(型態~面積+車位+管理+屋齡+房價百萬,method="rf",prox=TRUE,data=dat3)
 table(predict(modFit,newdata=testing,type="raw"),testing$型態)
 ```
-
 
 --- .segue .dark 
 ## Future
