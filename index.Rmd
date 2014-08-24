@@ -173,7 +173,7 @@ g
 
 
 ---
-## the shaple of data:Histogram -1
+## the shape of data:Histogram -1
 ```{r eval=FALSE}
 hist(dat1$面積,breaks=5,col="lightblue",prob=TRUE,xlab="面積",main="Historgram")
 hist(dat1$面積,breaks=100,col="lightgreen",prob=TRUE,xlab="面積",main="Historgram")
@@ -370,7 +370,7 @@ plot(T,R,log='xy',type='l')
 
 *** =fullwidth
 
-<img class=center src=figure/kepler_formula.png height=100>
+<img class=center src=figure/kepler_formula.png height=70>
 
 
 ---
