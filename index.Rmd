@@ -354,24 +354,24 @@ plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
 plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
 ```
 
---- &twocol
+--- &twocolfull
 ## Discovery pattern
 - 九大行星半徑(R,million_km)與週期(T,day)關係圖
 
 *** =left 
-  <img class=center src=figure/kepler.png height=90>
-
-*** =right 
-```{r  echo=FALSE, fig.width=9, fig.height=5}
+```{r  echo=FALSE, fig.width=4.5, fig.height=3.5}
 T=c(88,225,365,687,4339,10761,30690,60185,90782)
 R=c(58,108,150,228,778,1427,2875,4505,5914)
-plot(T,R,log='xy',type='l')
+plot(T,R,type="o",pch=19)
+```
+
+*** =right 
+```{r  echo=FALSE, fig.width=4.5, fig.height=3.5}
+plot(T,R,log='xy',type='o',pch=19)
 ```
 
 *** =fullwidth
-
-<img class=center src=figure/kepler_formula.png height=70>
-
+  <img class=center src=figure/kepler_formula.png height=100>
 
 ---
 ## Simple regression
@@ -613,13 +613,13 @@ RMSE
 ```
 
 --- .segue .dark 
-## Data Mining: Dicision Tree
+## Data Mining: Decision Tree
 
 ---
 ![alt text](figure/Dicision_Tree_Work.png)
 
 ---
-## Dicision Tree
+## Decision Tree
 ```{r}
 library(rpart)
 dat3$房價百萬 <- dat3$房價/10^6
@@ -640,7 +640,7 @@ prp(fit,extra=1)
 - 試練習五都 Disicion Tree
 
 ---
-## Dicision Tree (Ans8)
+## Decision Tree (Ans8)
 ```{r cache=TRUE}
 dat2$房價百萬 <- dat2$房價/10^6
 fit2 <- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
