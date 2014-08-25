@@ -131,7 +131,7 @@ pie(sort(table(dat1$型態),decreasing=TRUE))
 - 2. 前五大縣市的pie plot?
 
 ---
-# Barplot & Pie plot (Ans2)
+## Barplot & Pie plot (Ans2)
 ```{r eval=FALSE}
 barplot(sort(table(dat1$型態),decreasing=TRUE),las=1,horiz=TRUE)
 pie(sort(table(dat1$縣市),decreasing=TRUE)[1:5]) 
@@ -348,7 +348,7 @@ plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
 plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
 ```
 
-```{r  fig.width=9, fig.height=4.5, warning=FALSE}
+```{r  echo=FALSE, fig.width=9, fig.height=4.5, warning=FALSE}
 par(mfrow=c(1,2))
 plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
 plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
@@ -359,19 +359,19 @@ plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)"
 - 九大行星半徑(R,million_km)與週期(T,day)關係圖
 
 *** =left 
-```{r  echo=FALSE, fig.width=4.5, fig.height=3.5}
+```{r  echo=FALSE, fig.width=4.5, fig.height=3}
 T=c(88,225,365,687,4339,10761,30690,60185,90782)
 R=c(58,108,150,228,778,1427,2875,4505,5914)
 plot(T,R,type="o",pch=19)
 ```
 
 *** =right 
-```{r  echo=FALSE, fig.width=4.5, fig.height=3.5}
+```{r  echo=FALSE, fig.width=4.5, fig.height=3}
 plot(T,R,log='xy',type='o',pch=19)
 ```
 
 *** =fullwidth
-  <img class=center src=figure/kepler_formula.png height=100>
+  <img class=center src=figure/kepler_formula.png height=50>
 
 ---
 ## Simple regression
