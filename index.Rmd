@@ -170,8 +170,6 @@ g
 # g + theme_gray(base_family="STHeiti") # 顯示中文字 Mac user only
 ```
 
-
-
 ---
 ## the shape of data:Histogram -1
 ```{r eval=FALSE}
@@ -255,7 +253,7 @@ hist(log10(dat1$面積),breaks=5,col="blue",prob=TRUE,xlab="log10(面積)",main=
 ```
 - 房價(單位百萬)直方圖, log房價(單位百萬)直方圖
 
-> - HINT: 房價單位百萬，寬度調小
+> - Hint: 房價單位百萬，寬度調小
 
 ---
 ```{r eval=FALSE}
@@ -285,7 +283,7 @@ boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",m
 ```{r eval=FALSE}
 boxplot(面積~型態,data=subset(dat1,縣市=="臺北市"),ylab="面積(坪)",main="面積")
 ```
-- HINT:
+- Hint:
 ```{r eval=FALSE}
 dat2 <- dat1[dat1$縣市 %in% c("臺北市","臺中市","新北市","臺南市","高雄市") ,]
 dat2$縣市 <- factor(dat2$縣市,levels=c("臺北市","臺中市","新北市","臺南市","高雄市"))
@@ -367,7 +365,7 @@ plot(T,R,type="o",pch=19)
 
 *** =right 
 ```{r  echo=FALSE, fig.width=4.5, fig.height=3}
-plot(T,R,log='xy',type='o',pch=19)
+plot(T,R,log='xy',type='o',pch=19,xlab='logT',ylab='logR')
 ```
 
 *** =fullwidth
@@ -398,6 +396,8 @@ fit <- lm(log10(y)~log10(x))
 abline(fit,col=2,lwd=2)
 ```
 - 試作 臺北市房價 簡單回歸模型
+
+- Hint: `dat3 <- dat1[dat1$縣市=="臺北市",]`
 
 ---
 
@@ -436,14 +436,14 @@ qplot(area,price,data=dat4,log="xy") + geom_smooth(method="lm") +
 ---
 ```{r}
 m11 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理, data=dat1)
-summary(m11)
+summary(m11) # R-square=0.438 
 
 ```
 
 ---
 ```{r}
 m12 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區, data=dat1)
-summary(m12)
+summary(m12) # R-square=0.868
 ```
 
 ---
@@ -453,6 +453,7 @@ m11 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理, data=dat1);su
 m12 <- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區, data=dat1)
 ```
 - 試建立臺北市 multiple regression(predictor: +行政區)，並找出R.squared
+- Hint: `dat3 #台北市資料` 
 
 ---
 ```{r  fig.width=12, fig.height=3, warning=FALSE}
@@ -481,7 +482,8 @@ summary(m22) #台北市資料 multiple regression: log10(房價) ~ log10(面積)
 forecast <- dat1[1:5, c(1,2,3,5,6,7,8)];rownames(forecast) <- 1:5
 forecast$面積 <- c(30,30,8,40,40)
 forecast$行政區 <- c("萬華區","大安區","信義區","中山區","南港區")
-forecast$行政區 <- paste("臺北市",forecast$行政區,sep="");forecast$屋齡 <- c(30,6,6,8,8)
+forecast$行政區 <- paste("臺北市",forecast$行政區,sep="")
+forecast$屋齡 <- c(30,6,6,8,8)
 forecast$車位 <- c("無車位","有車位","無車位","有車位","有車位")
 forecast$管理 <- c("無管理","有管理","無管理","有管理","有管理")
 forecast$型態 <- c("公寓","大樓","套房","大樓","透天")
@@ -505,25 +507,26 @@ data.frame("行政區"=forecast$行政區,"屋齡"=forecast$屋齡,
 # prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
 tmp <- predict(m12, newdata=forecast, se.fit=TRUE)
 pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
-data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
+data.frame("行政區"=forecast$行政區,"屋齡"=forecast$屋齡,
+           "車位"=forecast$車位,"管理"=forecast$管理,
+           "建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
            "總價估計.萬元"=round(pred[,1]/10000),
            "單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
 ```
 - 試練習直接使用臺北市資料所建立之模型，作以上預測。
+- Hint: # m22為台北市資料 multiple regression: log10(房價) ~ log10(面積) + 屋齡 + 型態 + 車位 + 管理 + 行政區
 
 ---
 ```{r  echo=TRUE}
 # prediction
 tmp <- predict(m22, newdata=forecast, se.fit=TRUE)
 pred <- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
-data.frame("建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
+data.frame("行政區"=forecast$行政區,"屋齡"=forecast$屋齡,
+           "車位"=forecast$車位,"管理"=forecast$管理,
+           "建案坪數"=forecast$面積, "建物型態"=forecast$型態, 
            "總價估計.萬元"=round(pred[,1]/10000),
            "單價估計.萬元"=round(pred[,1]/10000/forecast$面積))
 ```
-
---- .segue .dark
-## Extension
-
 
 ---
 ## GAM model : 高價位房型
@@ -559,8 +562,48 @@ plot(m33, select=2, lwd=2)
 abline(h=m32$coefficients[["屋齡"]], lwd=2, col=2)
 ```
 
+
+--- .segue .dark 
+## Data Mining: Decision Tree
+
 ---
-## Prediction
+![alt text](figure/Dicision_Tree_Work.png)
+
+---
+## Decision Tree
+```{r}
+library(rpart)
+dat3$房價百萬 <- dat3$房價/10^6
+fit <- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
+library(rpart.plot) # 順序為: 公寓 大樓 套房 華夏 透天
+prp(fit,extra=1,col=2,box.col="lightgray",shadow.col="gray")
+```
+
+---
+## It's your turn 7
+```{r eval=FALSE}
+library(rpart)
+dat3$房價百萬 <- dat3$房價/10^6
+fit <- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
+library(rpart.plot)
+prp(fit,extra=1)
+```
+- 試練習五都 Disicion Tree
+
+---
+## Decision Tree (Ans7)
+```{r cache=TRUE}
+dat2$房價百萬 <- dat2$房價/10^6
+fit2 <- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
+prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
+# 五都順序為: 台北市 台中市 新北市 台南市 高雄市
+```
+
+--- .segue .dark
+## Extension
+
+---
+## checking model Prediction
 ```{r}
 # install.packages("caret") # 請確認安裝此套件時網路順暢！
 library(caret)
@@ -612,44 +655,6 @@ RMSE = apply(pred_M,2,RMSE_fun,obs_y=testing1[,4])
 RMSE
 ```
 
---- .segue .dark 
-## Data Mining: Decision Tree
-
----
-![alt text](figure/Dicision_Tree_Work.png)
-
----
-## Decision Tree
-```{r}
-library(rpart)
-dat3$房價百萬 <- dat3$房價/10^6
-fit <- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
-library(rpart.plot)
-prp(fit,extra=1,col=2,box.col="lightgray",shadow.col="gray")
-```
-
----
-## It's your turn 8
-```{r eval=FALSE}
-library(rpart)
-dat3$房價百萬 <- dat3$房價/10^6
-fit <- rpart(型態~面積+車位+管理+屋齡+房價百萬,data=dat3)
-library(rpart.plot)
-prp(fit,extra=1)
-```
-- 試練習五都 Disicion Tree
-
----
-## Decision Tree (Ans8)
-```{r cache=TRUE}
-dat2$房價百萬 <- dat2$房價/10^6
-fit2 <- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
-prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
-```
-
---- .segue .dark
-## Extension
-
 ---
 ## Bootstrap sampling
 
@@ -678,7 +683,7 @@ table(predict(modFit2,newdata=testing2,type="raw"),testing2$縣市)
 > - <img class=center src=figure/random_forest_outcome.png style="width: 800px;">
 
 ---
-## It's your turn 8+1 for homework
+## It's your turn 7+2 for homework
 ```{r eval=FALSE}
 dat4 <- dat1[dat1$縣市 %in% c("臺北市","臺中市","高雄市") ,]
 dat4$縣市 <- factor(dat4$縣市,levels=c("臺北市","臺中市","高雄市"))
@@ -694,7 +699,7 @@ table(predict(modFit2,newdata=testing2,type="raw"),testing2$縣市)
 - 試練習建物型態的RandomForest
 
 --- 
-## Random Forest (Ans8+1)
+## Random Forest (Ans7+2)
 ```{r cache=TRUE}
 # install.packages(c("randomForest","e1071")) # 請確認安裝套件時網路順暢！
 library(randomForest)
