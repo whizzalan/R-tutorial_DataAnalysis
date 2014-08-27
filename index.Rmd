@@ -595,8 +595,8 @@ prp(fit,extra=1)
 ```{r cache=TRUE}
 dat2$房價百萬 <- dat2$房價/10^6
 fit2 <- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
-prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 # 五都順序為: 台北市 台中市 新北市 台南市 高雄市
+prp(fit2,extra=1,col=2,box.col="lightgray",shadow.col="gray")
 ```
 
 --- .segue .dark

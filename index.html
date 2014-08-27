@@ -1409,13 +1409,11 @@ prp(fit,extra=1)
   <article data-timings="">
     <pre><code class="r">dat2$房價百萬 &lt;- dat2$房價/10^6
 fit2 &lt;- rpart(縣市~型態+面積+屋齡+房價百萬,data=dat2)
+# 五都順序為: 台北市 台中市 新北市 台南市 高雄市
 prp(fit2,extra=1,col=2,box.col=&quot;lightgray&quot;,shadow.col=&quot;gray&quot;)
 </code></pre>
 
 <div class="rimage center"><img src="figure/unnamed-chunk-56.png" title="plot of chunk unnamed-chunk-56" alt="plot of chunk unnamed-chunk-56" class="plot" /></div>
-
-<pre><code class="r"># 五都順序為: 台北市 台中市 新北市 台南市 高雄市
-</code></pre>
 
   </article>
   <!-- Presenter Notes -->
