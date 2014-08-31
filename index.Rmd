@@ -352,9 +352,14 @@ plot(dat1$面積,dat1$房價/10^4,xlab="面積(坪)",ylab="房價(萬元)")
 plot(dat1$面積,dat1$房價/10^4,xlab="log面積(坪)",ylab="log房價(萬元)",log="xy")
 ```
 
+---
+## Kepler Third Law
+  <img class=center src=figure/kepler_derivation.png height=150>
+
+
 --- &twocolfull
 ## Discovery pattern
-- 九大行星半徑(R,million_km)與週期(T,day)關係圖
+- 九大行星半徑(R=a/2,million_km)與週期(T,day)關係圖
 
 *** =left 
 ```{r  echo=FALSE, fig.width=4.5, fig.height=3}
@@ -369,7 +374,7 @@ plot(T,R,log='xy',type='o',pch=19,xlab='logT',ylab='logR')
 ```
 
 *** =fullwidth
-  <img class=center src=figure/kepler_formula.png height=50>
+  <img class=center src=figure/kepler_formula_new.png height=50>
 
 ---
 ## Simple regression
@@ -565,6 +570,10 @@ abline(h=m32$coefficients[["屋齡"]], lwd=2, col=2)
 
 --- .segue .dark 
 ## Data Mining: Decision Tree
+
+---
+## http://en.akinator.com/
+![alt text](figure/akinator.png)
 
 ---
 ![alt text](figure/Dicision_Tree_Work.png)

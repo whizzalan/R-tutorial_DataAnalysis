@@ -642,11 +642,22 @@ plot(dat1$面積,dat1$房價/10^4,xlab=&quot;log面積(坪)&quot;,ylab=&quot;log
 
 <slide class="" id="slide-32" style="background:;">
   <hgroup>
+    <h2>Kepler Third Law</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img class=center src=figure/kepler_derivation.png height=150></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-33" style="background:;">
+  <hgroup>
     <h2>Discovery pattern</h2>
   </hgroup>
   <article data-timings="">
     <ul>
-<li>九大行星半徑(R,million_km)與週期(T,day)關係圖</li>
+<li>九大行星半徑(R=a/2,million_km)與週期(T,day)關係圖</li>
 </ul>
 
 <div style='float:left;width:;'>
@@ -658,14 +669,14 @@ plot(dat1$面積,dat1$房價/10^4,xlab=&quot;log面積(坪)&quot;,ylab=&quot;log
 
 </div>
 <div style='clear:both'>
-  <p><img class=center src=figure/kepler_formula.png height=50></p>
+  <p><img class=center src=figure/kepler_formula_new.png height=50></p>
 
 </div>
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-33" style="background:;">
+<slide class="" id="slide-34" style="background:;">
   <hgroup>
     <h2>Simple regression</h2>
   </hgroup>
@@ -681,7 +692,7 @@ abline(fit,col=2,lwd=2)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-34" style="background:;">
+<slide class="" id="slide-35" style="background:;">
   <article data-timings="">
     <pre><code class="r">summary(fit) #all data simple regression: log10(房價) ~ log10(面積)
 </code></pre>
@@ -710,7 +721,7 @@ F-statistic: 3.26e+03 on 1 and 5429 DF,  p-value: &lt;2e-16
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-35" style="background:;">
+<slide class="" id="slide-36" style="background:;">
   <hgroup>
     <h2>It&#39;s your turn 5</h2>
   </hgroup>
@@ -732,7 +743,7 @@ abline(fit,col=2,lwd=2)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-36" style="background:;">
+<slide class="" id="slide-37" style="background:;">
   <article data-timings="">
     <pre><code class="r"># Simple regression (Ans5)
 dat3 &lt;- dat1[dat1$縣市==&quot;臺北市&quot;,]
@@ -749,7 +760,7 @@ legend(&quot;topleft&quot;,legend=round(summary(fit)$r.squared,4),title=&quot;r.
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-37" style="background:;">
+<slide class="" id="slide-38" style="background:;">
   <hgroup>
     <h2>Multiple regression - Variables</h2>
   </hgroup>
@@ -768,7 +779,7 @@ legend(&quot;topleft&quot;,legend=round(summary(fit)$r.squared,4),title=&quot;r.
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-38" style="background:;">
+<slide class="" id="slide-39" style="background:;">
   <hgroup>
     <h2>Multiple regression  - Category variable</h2>
   </hgroup>
@@ -786,7 +797,7 @@ qplot(area,price,data=dat4,log=&quot;xy&quot;) + geom_smooth(method=&quot;lm&quo
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-39" style="background:;">
+<slide class="" id="slide-40" style="background:;">
   <article data-timings="">
     <pre><code class="r">m11 &lt;- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理, data=dat1)
 summary(m11) # R-square=0.438 
@@ -824,7 +835,7 @@ F-statistic:  527 on 8 and 5422 DF,  p-value: &lt;2e-16
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-40" style="background:;">
+<slide class="" id="slide-41" style="background:;">
   <article data-timings="">
     <pre><code class="r">m12 &lt;- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區, data=dat1)
 summary(m12) # R-square=0.868
@@ -1088,7 +1099,7 @@ F-statistic:  146 on 234 and 5196 DF,  p-value: &lt;2e-16
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-41" style="background:;">
+<slide class="" id="slide-42" style="background:;">
   <hgroup>
     <h2>It&#39;s your turn 6</h2>
   </hgroup>
@@ -1106,7 +1117,7 @@ m12 &lt;- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區, 
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-42" style="background:;">
+<slide class="" id="slide-43" style="background:;">
   <article data-timings="">
     <pre><code class="r"># Multiple regression &amp; category variable-1 (Ans6)-1
 m21 &lt;- lm(log10(房價)~log10(面積)+屋齡+型態+車位+管理, data=dat3)
@@ -1124,7 +1135,7 @@ data.frame(&quot;model.taiwan.1&quot;=summary(m11)$r.sq, &quot;model.taiwan.all&
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-43" style="background:;">
+<slide class="" id="slide-44" style="background:;">
   <article data-timings="">
     <pre><code class="r">summary(m21) #台北市資料 multiple regression: log10(房價) ~ log10(面積) + 屋齡 + 型態 + 車位 + 管理
 </code></pre>
@@ -1161,7 +1172,7 @@ F-statistic:  199 on 8 and 542 DF,  p-value: &lt;2e-16
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-44" style="background:;">
+<slide class="" id="slide-45" style="background:;">
   <article data-timings="">
     <pre><code class="r">summary(m22) #台北市資料 multiple regression: log10(房價) ~ log10(面積) + 屋齡 + 型態 + 車位 + 管理 + 行政區
 </code></pre>
@@ -1209,7 +1220,7 @@ F-statistic:  115 on 19 and 531 DF,  p-value: &lt;2e-16
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-45" style="background:;">
+<slide class="" id="slide-46" style="background:;">
   <hgroup>
     <h2>Prediction</h2>
   </hgroup>
@@ -1230,7 +1241,7 @@ forecast$型態 &lt;- c(&quot;公寓&quot;,&quot;大樓&quot;,&quot;套房&quot;
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-46" style="background:;">
+<slide class="" id="slide-47" style="background:;">
   <article data-timings="">
     <pre><code class="r"># prediction with m12: log10(房價)~log10(面積)+屋齡+型態+車位+管理+行政區
 tmp &lt;- predict(m12, newdata=forecast, se.fit=TRUE)
@@ -1254,7 +1265,7 @@ data.frame(&quot;行政區&quot;=forecast$行政區,&quot;屋齡&quot;=forecast$
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-47" style="background:;">
+<slide class="" id="slide-48" style="background:;">
   <hgroup>
     <h2>It&#39;s your trun 7</h2>
   </hgroup>
@@ -1278,7 +1289,7 @@ data.frame(&quot;行政區&quot;=forecast$行政區,&quot;屋齡&quot;=forecast$
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-48" style="background:;">
+<slide class="" id="slide-49" style="background:;">
   <article data-timings="">
     <pre><code class="r"># prediction
 tmp &lt;- predict(m22, newdata=forecast, se.fit=TRUE)
@@ -1302,7 +1313,7 @@ data.frame(&quot;行政區&quot;=forecast$行政區,&quot;屋齡&quot;=forecast$
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-49" style="background:;">
+<slide class="" id="slide-50" style="background:;">
   <hgroup>
     <h2>GAM model : 高價位房型</h2>
   </hgroup>
@@ -1328,7 +1339,7 @@ data.frame(&quot;linear model_1&quot;=summary(m31)$adj.r.sq,
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-50" style="background:;">
+<slide class="" id="slide-51" style="background:;">
   <hgroup>
     <h2>GAM model parameter : smoothing parameter</h2>
   </hgroup>
@@ -1346,7 +1357,7 @@ abline(h=m32$coefficients[[&quot;屋齡&quot;]], lwd=2, col=2)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue dark" id="slide-51" style="background:;">
+<slide class="segue dark" id="slide-52" style="background:;">
   <hgroup>
     <h2>Data Mining: Decision Tree</h2>
   </hgroup>
@@ -1356,7 +1367,18 @@ abline(h=m32$coefficients[[&quot;屋齡&quot;]], lwd=2, col=2)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-52" style="background:;">
+<slide class="" id="slide-53" style="background:;">
+  <hgroup>
+    <h2><a href="http://en.akinator.com/">http://en.akinator.com/</a></h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="figure/akinator.png" alt="alt text"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-54" style="background:;">
   <article data-timings="">
     <p><img src="figure/Dicision_Tree_Work.png" alt="alt text"></p>
 
@@ -1364,7 +1386,7 @@ abline(h=m32$coefficients[[&quot;屋齡&quot;]], lwd=2, col=2)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-53" style="background:;">
+<slide class="" id="slide-55" style="background:;">
   <hgroup>
     <h2>Decision Tree</h2>
   </hgroup>
@@ -1382,7 +1404,7 @@ prp(fit,extra=1,col=2,box.col=&quot;lightgray&quot;,shadow.col=&quot;gray&quot;)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-54" style="background:;">
+<slide class="" id="slide-56" style="background:;">
   <hgroup>
     <h2>It&#39;s your turn 7</h2>
   </hgroup>
@@ -1402,7 +1424,7 @@ prp(fit,extra=1)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-55" style="background:;">
+<slide class="" id="slide-57" style="background:;">
   <hgroup>
     <h2>Decision Tree (Ans7)</h2>
   </hgroup>
@@ -1419,7 +1441,7 @@ prp(fit2,extra=1,col=2,box.col=&quot;lightgray&quot;,shadow.col=&quot;gray&quot;
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue dark" id="slide-56" style="background:;">
+<slide class="segue dark" id="slide-58" style="background:;">
   <hgroup>
     <h2>Extension</h2>
   </hgroup>
@@ -1429,7 +1451,7 @@ prp(fit2,extra=1,col=2,box.col=&quot;lightgray&quot;,shadow.col=&quot;gray&quot;
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-57" style="background:;">
+<slide class="" id="slide-59" style="background:;">
   <hgroup>
     <h2>checking model Prediction</h2>
   </hgroup>
@@ -1465,7 +1487,7 @@ testing1
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-58" style="background:;">
+<slide class="" id="slide-60" style="background:;">
   <hgroup>
     <h2>It&#39;s your turn 7+1 prediction</h2>
   </hgroup>
@@ -1493,7 +1515,7 @@ pred &lt;- 10^cbind(tmp$fit, tmp$fit-tmp$se.fit, tmp$fit+tmp$se.fit)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-59" style="background:;">
+<slide class="" id="slide-61" style="background:;">
   <hgroup>
     <h2>Prediction (Ans7+1)</h2>
   </hgroup>
@@ -1529,7 +1551,7 @@ cbind(pred_m31[,1],pred_m32[,1],pred_m33[,1])
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-60" style="background:;">
+<slide class="" id="slide-62" style="background:;">
   <hgroup>
     <h2>Evaluation</h2>
   </hgroup>
@@ -1548,7 +1570,7 @@ RMSE
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-61" style="background:;">
+<slide class="" id="slide-63" style="background:;">
   <hgroup>
     <h2>Bootstrap sampling</h2>
   </hgroup>
@@ -1562,7 +1584,7 @@ RMSE
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-62" style="background:;">
+<slide class="" id="slide-64" style="background:;">
   <hgroup>
     <h2>Random Forest</h2>
   </hgroup>
@@ -1576,7 +1598,7 @@ RMSE
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-63" style="background:;">
+<slide class="" id="slide-65" style="background:;">
   <article data-timings="">
     <pre><code class="r">library(caret)
 dat4 &lt;- dat1[dat1$縣市 %in% c(&quot;臺北市&quot;,&quot;臺中市&quot;,&quot;高雄市&quot;) ,]
@@ -1599,7 +1621,7 @@ table(predict(modFit2,newdata=testing2,type=&quot;raw&quot;),testing2$縣市)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-64" style="background:;">
+<slide class="" id="slide-66" style="background:;">
   <hgroup>
     <h2>It&#39;s your turn 7+2 for homework</h2>
   </hgroup>
@@ -1624,7 +1646,7 @@ table(predict(modFit2,newdata=testing2,type=&quot;raw&quot;),testing2$縣市)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-65" style="background:;">
+<slide class="" id="slide-67" style="background:;">
   <hgroup>
     <h2>Random Forest (Ans7+2)</h2>
   </hgroup>
@@ -1653,7 +1675,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue dark" id="slide-66" style="background:;">
+<slide class="segue dark" id="slide-68" style="background:;">
   <hgroup>
     <h2>Future</h2>
   </hgroup>
@@ -1663,7 +1685,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-67" style="background:;">
+<slide class="" id="slide-69" style="background:;">
   <article data-timings="">
     <p><img class=center src=figure/data_scientist.png style="width: 800px;"></p>
 
@@ -1671,7 +1693,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-68" style="background:;">
+<slide class="" id="slide-70" style="background:;">
   <hgroup>
     <h2>Advanced Course</h2>
   </hgroup>
@@ -1705,7 +1727,7 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-69" style="background:;">
+<slide class="" id="slide-71" style="background:;">
   <hgroup>
     <h2>Reference</h2>
   </hgroup>
@@ -1914,49 +1936,49 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=32 title='Discovery pattern'>
+        data-slide=32 title='Kepler Third Law'>
          32
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=33 title='Simple regression'>
+        data-slide=33 title='Discovery pattern'>
          33
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=34 title=''>
+        data-slide=34 title='Simple regression'>
          34
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=35 title='It&#39;s your turn 5'>
+        data-slide=35 title=''>
          35
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=36 title=''>
+        data-slide=36 title='It&#39;s your turn 5'>
          36
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=37 title='Multiple regression - Variables'>
+        data-slide=37 title=''>
          37
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=38 title='Multiple regression  - Category variable'>
+        data-slide=38 title='Multiple regression - Variables'>
          38
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=39 title=''>
+        data-slide=39 title='Multiple regression  - Category variable'>
          39
       </a>
     </li>
@@ -1968,13 +1990,13 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=41 title='It&#39;s your turn 6'>
+        data-slide=41 title=''>
          41
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=42 title=''>
+        data-slide=42 title='It&#39;s your turn 6'>
          42
       </a>
     </li>
@@ -1992,152 +2014,164 @@ table(predict(modFit,newdata=testing,type=&quot;raw&quot;),testing$型態)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=45 title='Prediction'>
+        data-slide=45 title=''>
          45
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=46 title=''>
+        data-slide=46 title='Prediction'>
          46
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=47 title='It&#39;s your trun 7'>
+        data-slide=47 title=''>
          47
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=48 title=''>
+        data-slide=48 title='It&#39;s your trun 7'>
          48
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=49 title='GAM model : 高價位房型'>
+        data-slide=49 title=''>
          49
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=50 title='GAM model parameter : smoothing parameter'>
+        data-slide=50 title='GAM model : 高價位房型'>
          50
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=51 title='Data Mining: Decision Tree'>
+        data-slide=51 title='GAM model parameter : smoothing parameter'>
          51
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=52 title=''>
+        data-slide=52 title='Data Mining: Decision Tree'>
          52
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=53 title='Decision Tree'>
+        data-slide=53 title='<a href="http://en.akinator.com/">http://en.akinator.com/</a>'>
          53
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=54 title='It&#39;s your turn 7'>
+        data-slide=54 title=''>
          54
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=55 title='Decision Tree (Ans7)'>
+        data-slide=55 title='Decision Tree'>
          55
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=56 title='Extension'>
+        data-slide=56 title='It&#39;s your turn 7'>
          56
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=57 title='checking model Prediction'>
+        data-slide=57 title='Decision Tree (Ans7)'>
          57
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=58 title='It&#39;s your turn 7+1 prediction'>
+        data-slide=58 title='Extension'>
          58
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=59 title='Prediction (Ans7+1)'>
+        data-slide=59 title='checking model Prediction'>
          59
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=60 title='Evaluation'>
+        data-slide=60 title='It&#39;s your turn 7+1 prediction'>
          60
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=61 title='Bootstrap sampling'>
+        data-slide=61 title='Prediction (Ans7+1)'>
          61
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=62 title='Random Forest'>
+        data-slide=62 title='Evaluation'>
          62
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=63 title=''>
+        data-slide=63 title='Bootstrap sampling'>
          63
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=64 title='It&#39;s your turn 7+2 for homework'>
+        data-slide=64 title='Random Forest'>
          64
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=65 title='Random Forest (Ans7+2)'>
+        data-slide=65 title=''>
          65
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=66 title='Future'>
+        data-slide=66 title='It&#39;s your turn 7+2 for homework'>
          66
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=67 title=''>
+        data-slide=67 title='Random Forest (Ans7+2)'>
          67
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=68 title='Advanced Course'>
+        data-slide=68 title='Future'>
          68
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=69 title='Reference'>
+        data-slide=69 title=''>
          69
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=70 title='Advanced Course'>
+         70
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=71 title='Reference'>
+         71
       </a>
     </li>
   </ul>
